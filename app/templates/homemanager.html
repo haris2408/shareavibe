@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe</title>
+    <style>
+        body {
+            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            background-color: rgba(255, 255, 255, 0.9);
+            
+            padding: 30px;
+            margin: 30px auto;
+            width: 80%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        form {
+           
+            margin-bottom: 20px;
+        }
+
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type=text]:focus {
+            border: 2px solid #4CAF50;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #ddd;
+            padding: 10px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+        }
+
+        #queue ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #queue li {
+            background-color: #eee;
+            padding: 10px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+    <h1>{{ cafe.name }}</h1>
+
+    <div id="player"></div>
+    <div id="queue"></div>
+
+    <button id="active-btn" type="button" class="btn btn-primary mb-3" onclick="toggleCafeStatus()">{% if cafe.is_active %}Active{% else %}Inactive{% endif %}</button>
+
+    {% if cafe.is_active %}
+    <form class="form-inline">
+        <input type="text" id="youtube-link" class="form-control" placeholder="Paste YouTube link here">
+        <button type="button" class="btn btn-success" onclick="playYouTube()">Play</button>
+    </form>
+    <p>Is Active: {{ cafe.is_active }}</p>
+    <p>Current Token: {{ cafe.current_token }}</p>
+    <p>Next Token: {{ cafe.next_token }}</p>
+
+    <h2>Songs</h2>
+    <ul>
+    {% for song in songs %}
+        <li>{{ song.1 }} - {{ song.0 }}</li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'playlists' %}" class="btn btn-primary mb-3">Playlist</a>
+    <br>
+    {% for q in queue %}
+        {{ q.id }}
+    {% endfor %}
+    {% else %}
+    <p>Cafe is currently inactive.</p>
+    {% endif %}
+</div>
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+  var player;
+  var queue = [];
+  var myvideoid;
+  function Refresh() {   
+    {% for song in songs %}
+    var text = "{{ song.0 }}";
+    var videoId = getYouTubeVideoId(text);
+    queue.push(videoId);
+    {% endfor %}
+    playNextVideo();
+  }
+
+  function playYouTube() {
+  
+    var youtubeLink = document.getElementById("youtube-link").value;
+    var videoId = getYouTubeVideoId(youtubeLink);
+    queue.push(videoId);
+    updateQueueDisplay();
+    if (!player) {
+      playNextVideo();
+    }
+  }
+  
+  function playNextVideo() {
+    if (queue.length > 0) {
+      var videoId = queue.shift();
+      myvideoid=videoId;
+      console.log("myvideoid",myvideoid);
+      //updateSongs();
+      player = new YT.Player('player', {
+        height: '260',
+        width: '440',
+        videoId: videoId,
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+      updateQueueDisplay();
+    }
+  }
+
+  function getYouTubeVideoId(link) {
+    var videoId = link.split('v=')[1];
+    var ampersandPosition = videoId.indexOf('&');
+    if (ampersandPosition !== -1) {
+      videoId = videoId.substring(0, ampersandPosition);
+    }
+    return videoId;
+  }
+
+  function setVideoPlayed(videoId) {
+    $.ajax({
+      type: 'POST',
+      url: '/update-queueisplayed/',
+      data: {
+        'song_link': videoId,
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      success: function(response) {
+        console.log(response);
+      },
+      error: function(xhr, status, error) {
+        console.error(xhr.responseText);
+      }
+    });
+  }
+
+  function onPlayerReady(event) {
+    event.target.playVideo();
+  }
+  
+  function isVideoPlaying() {
+    if (player) {
+      return player.getPlayerState() === 1;
+    } else {
+      return false;
+    }
+  }
+  setInterval(function() {
+    if (player && player.getPlayerState() === 2) {
+      // Video is paused, do nothing
+    } else if (!isVideoPlaying()) {
+      location.reload();
+    }
+  }, 5000);
+  function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.ENDED) {
+      event.target.destroy();
+      /**var first_queue_id ;
+      {% with first_queue=queue.first %}
+        {% if first_queue %}
+          
+          first_queue_id = "{{ first_queue.id }}";
+          console.log("queue length",first_queue_id);
+        {% endif %}
+      {% endwith %}
+      first_queue_id = parseInt(first_queue_id);
+      if (first_queue_id) {
+        $.ajax({
+          type: 'POST',
+          url: '/api/update-queue/',
+          data: {
+            'queue_id': first_queue_id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+          },
+          success: function() {
+            console.log('is_played set to true for Queue object with id ' + first_queue_id);
+          },
+          error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+          }
+        });
+      }**/
+      setVideoPlayed(myvideoid);
+      updateSongs();
+      playNextVideo();
+    }
+  }
+
+  function updateSongs() {
+    fetch('/get-songs/')
+        .then(response => response.json())
+        .then(data => {
+            var nsongs = data.newsongs;
+            // clear the queue
+            queue = [];
+            // update the songs and queue variables
+            nsongs.forEach(song => {
+                var text = song[0];
+                var videoId = getYouTubeVideoId(text);
+                queue.push(videoId);
+            });
+            console.log('Songs updated:', queue);
+        })
+        .catch(error => {
+            console.log('Error updating songs:', error);
+        });
+  }
+  function updateQueueDisplay() {
+    
+    var queueElement = document.getElementById("queue");
+    var queueItems = queue.map(function(videoId) {
+      return "<li>" + videoId + "</li>";
+    });
+    queueElement.innerHTML = "<ul>" + queueItems.join("") + "</ul>";
+  }
+
+  function toggleCafeStatus() {
+    var activeBtn = document.getElementById("active-btn");
+    var isActive = activeBtn.textContent === "Active";
+    fetch("{% url 'update_cafe_status' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken")
+      },
+      body: JSON.stringify({ "is_active": !isActive })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          var cafe = data.cafe;
+          activeBtn.textContent = cafe.is_active ? "Active" : "Inactive";
+          if (cafe.is_active) {
+            console.log("Cafe is currently active");
+          } else {
+            console.log("Cafe is not currently active");
+          }
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch(error => console.error(error));
+  }
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    Refresh();
+  });
+  document.getElementById("active-btn").addEventListener("click", toggleCafeStatus);
+</script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Cafe</title>
+    <style>
+        body {
+            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            
+            color: black;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 30px auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin: 12px 0;
+        }
+
+        input {
+            width: 100%;
+            font-size: 14px;
+            padding: 5px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            font-size: 18px;
+            background-color: #45a049;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 20px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #3a78c2;
+        }
+    </style>
+</head>
+<body>
+    
+    <form method="POST" action="{% url 'add_cafe' %}" enctype="multipart/form-data">
+      <h1>Add Cafe</h1>
+        {% csrf_token %}
+        <label for="logo">Cafe Logo:</label>
+        <input type="file" id="logo" name="logo">
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" required>
+
+        <label for="cafe_name">Cafe Name:</label>
+        <input type="text" id="cafe_name" name="cafe_name" required>
+
+        <label for="area">Area:</label>
+        <input type="text" id="area" name="area" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="contact">Contact:</label>
+        <input type="tel" id="contact" name="contact" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="tllat">Top Left lat:</label>
+        <input type="float" id="tllat" name="tllat" required>
+
+        <label for="tllong">Top Left long:</label>
+        <input type="float" id="tllong" name="tllong" required>
+
+        <label for="trlat">Top Right lat:</label>
+        <input type="float" id="trlat" name="trlat" required>
+
+        <label for="trlong">Top Right long:</label>
+        <input type="float" id="trlong" name="trlong" required>
+
+        <label for="bllat">Bottom Left lat:</label>
+        <input type="float" id="bllat" name="bllat" required>
+
+        <label for="bllong">Bottom Left long:</label>
+        <input type="float" id="bllong" name="bllong" required>
+
+        <label for="brlat">Bottom Right lat:</label>
+        <input type="float" id="brlat" name="brlat" required>
+
+        <label for="brlong">Bottom Right long:</label>
+        <input type="float" id="brlong" name="brlong" required>
+
+  <input type="submit" value="Add Cafe">
+</form>
