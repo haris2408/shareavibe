@@ -276,3 +276,6 @@ def get_cafes(request,lat,long):
             cafes_list.append(cafe_dict) 
         return JsonResponse({'status':'success','cafes':cafes_list})
     return JsonResponse({'status':'failure'})
+
+def thisIsjustatest(request):
+    return JsonResponse({'status':'success'})
