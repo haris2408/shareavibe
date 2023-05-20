@@ -4,7 +4,7 @@ from app.models import Address
 def get_cafes_within_radius(latitude, longitude, radius):
     # query the database to get all addresses
     print(f"inside get_cafes_within_radius with lat: {latitude} long: {longitude} and radius: {radius}")
-    addresses = address.objects.all()
+    addresses = Address.objects.all()
 
     # create a list to store the cafes within the radius
     cafes_within_radius = []
