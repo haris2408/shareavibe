@@ -19,6 +19,15 @@ class Playlist(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
     playlist_name = models.CharField(max_length=100)
 
+class CafeBlacklist(models.Model):
+    song_name = models.CharField(max_length=255,null=True)
+    song_link = models.CharField(max_length=255)
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
+
+class GlobalBlacklist(models.Model):
+    song_name = models.CharField(max_length=255,null=True)
+    song_link = models.CharField(max_length=255)
+
 class CustomUser(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255,null=True)
@@ -38,7 +47,6 @@ class Song(models.Model):
 
 class Queue(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
     date = models.DateTimeField()
     song_link = models.CharField(max_length=255,null=True)
     song_name = models.CharField(max_length=255,null=True)

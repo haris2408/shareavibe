@@ -1,5 +1,5 @@
 from django.contrib import messages
-from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue
+from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue,CafeBlacklist,GlobalBlacklist
 from django.shortcuts import get_object_or_404, render,redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -50,7 +50,7 @@ class CustomJsonEncoder(json.JSONEncoder):
 def get_songs(request):
     cafe_id = request.session.get('cafe_id')
     queue = Queue.objects.filter(cafe_id=cafe_id, is_played=False)
-    newsongs = [(q.song_link, q.song_name, q.song, q.is_played) for q in queue]
+    newsongs = [(q.song_link, q.song_name, q.is_played) for q in queue]
     data = {'newsongs': newsongs}
     return JsonResponse(data, encoder=CustomJsonEncoder)
 
@@ -86,14 +86,16 @@ def update_cafe_status(request):
 @csrf_exempt
 def play_song(request):
     if request.method == 'POST':
-        song_id = request.POST.get('song_id')
+        #song_id = request.POST.get('song_id')
         cafe_id = request.session.get('cafe_id')
         song_link = request.POST.get('song_link')
         cafe = Cafe.objects.get(id=cafe_id)
-        song = Song.objects.get(id=song_id)
+        #song = Song.objects.get(id=song_id)
+        #song = Song.objects.get(song_link=song_link)
+        song = Song.objects.filter(song_link=song_link).first()
         next_token = cafe.next_token
         # create new Queue object using song_id and song_link
-        queue = Queue.objects.create(song_id=song_id, song_link=song_link ,date=timezone.now(),cafe_id=cafe_id)
+        queue = Queue.objects.create(song_link=song_link ,date=timezone.now(),cafe_id=cafe_id)
         queue.token_no=next_token
         queue.song_name = song.song_name
         queue.save()
@@ -103,6 +105,94 @@ def play_song(request):
         return JsonResponse({'success': True})
     # return error response if not POST request
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    
+@csrf_exempt
+def play_youtube(request):
+    if request.method == 'POST':
+        youtube_link = request.POST.get('youtube_link')
+        cafe_id = request.session.get('cafe_id')
+        # Check if the youtube_link is blacklisted
+        if cafe_id and youtube_link:
+            is_blacklisted2 = GlobalBlacklist.objects.filter(song_link=youtube_link).exists()
+            
+            if is_blacklisted2:
+                print('This song is globally blacklisted')
+                return JsonResponse({'success': False, 'error': 'This song is globally blacklisted'})
+            is_blacklisted = CafeBlacklist.objects.filter(cafe_id=cafe_id,song_link=youtube_link).exists()
+            if is_blacklisted:
+                print('This song is blacklisted')
+                return JsonResponse({'success': False, 'error': 'This song is blacklisted'})
+            else:
+                cafe = Cafe.objects.get(id=cafe_id)
+                next_token = cafe.next_token
+                api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+                youtube = build('youtube', 'v3', developerKey=api_key)
+                video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
+                video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+                song_name = video_info['items'][0]['snippet']['title']
+                
+                queue = Queue.objects.create(song_link=youtube_link,date=timezone.now(),cafe_id=cafe_id,song_name=song_name)
+                queue.token_no=next_token
+                cafe.next_token += 1
+                cafe.save()
+                queue.save()
+                return JsonResponse({'success': True,'token':queue.token_no})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@csrf_exempt
+def add_to_blacklist(request):
+    if request.method == 'POST':
+        youtube_link = request.POST.get('youtube_link')
+        cafe_id = request.session.get('cafe_id')
+        cafe_blacklist = CafeBlacklist.objects.filter(cafe_id=cafe_id, song_link=youtube_link)
+        if cafe_blacklist.exists():
+            print('This song is already blacklisted')
+        else:
+            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
+            video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+            song_name = video_info['items'][0]['snippet']['title']
+            CafeBlacklist.objects.create(song_link=youtube_link, cafe_id=cafe_id,song_name=song_name)
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+def add_to_blacklist2(request):
+    if request.method == 'POST':
+        youtube_link = request.POST.get('youtube_link')
+        cafe_id = request.session.get('cafe_id')
+        
+        # Update is_played=true for songs with the same youtube_link in the Queue model for that cafe
+        Queue.objects.filter(song_link=youtube_link,cafe_id=cafe_id).update(is_played=True)
+        cafe_blacklist = CafeBlacklist.objects.filter(cafe_id=cafe_id, song_link=youtube_link)
+        if cafe_blacklist.exists():
+            print('This song is already blacklisted')
+        else:
+            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
+            video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+            song_name = video_info['items'][0]['snippet']['title']
+            CafeBlacklist.objects.create(song_link=youtube_link, cafe_id=cafe_id,song_name=song_name)
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+@csrf_exempt
+def add_to_Gblacklist(request):
+    if request.method == 'POST':
+        youtube_link = request.POST.get('youtube_link')
+        cafe_blacklist = GlobalBlacklist.objects.filter(song_link=youtube_link)
+        if cafe_blacklist.exists():
+            print('This song is already blacklisted')
+        else:
+            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
+            video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+            song_name = video_info['items'][0]['snippet']['title']
+            GlobalBlacklist.objects.create(song_link=youtube_link, song_name=song_name)
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
     
 def add_cafe(request):
     if request.method == 'POST':
@@ -150,7 +240,7 @@ def homemanager(request):
         print(f"No Cafe object found with id {cafe_id}")
         cafe = None
     queue = Queue.objects.filter(cafe_id=cafe_id, is_played=False)
-    songs = [(q.song_link,q.song_name, q.song,q.is_played,) for q in queue]
+    songs = [(q.song_link,q.song_name,q.is_played,) for q in queue]
     context = {'cafe': cafe, 'songs': songs, 'queue': queue}
     return render(request, 'homemanager.html', context)
 
@@ -253,7 +343,7 @@ def makelogin(request):
 def verify_coord(request,lat,long):
     latt = float(lat)
     longg = float(long)
-    adresses = address.objects.all()
+    adresses = Address.objects.all()
     print(lat)
     print(long)
     print(adresses)

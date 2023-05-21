@@ -4,3 +4,26 @@
   <br>
   <a href="{% url 'add_user' %}" class="btn btn-primary">Add User</a>
 {% endblock %}
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function addToGBlacklist() {
+    var youtubeLink = document.getElementById("blacklist-link").value;
+    $.ajax({
+        type: "POST",
+        url: "/api/add-to-Gblacklist/",
+        data: {
+            youtube_link: youtubeLink,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                alert("Link has been added to the Globalblacklist");
+            } else {
+                alert("Error: " + response.error);
+            }
+        }
+    });
+  }
+</script>
+{% endblock %}

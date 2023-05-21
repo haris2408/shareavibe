@@ -120,10 +120,117 @@
 {% else %}
     <p>No songs yet.</p>
 {% endif %}
+
+<form class="form-inline">
+    <input type="text" id="youtube-link" name="youtube_link" class="form-control" placeholder="Paste YouTube link here">
+    <button type="button" class="btn btn-success" onclick="playYouTube()">Play</button>
+</form>
 </body>
 <script>
-    var playButtons = document.querySelectorAll('button[data-song-id]');
-    playButtons.forEach(function(button) {
+    async function playYouTube() {
+        var youtubeLink = document.getElementById("youtube-link").value;
+        
+        try {
+          var isSong = await isSongVideo(youtubeLink);
+          console.log("is song:",isSong);
+          if (isSong) {
+            const durationInSeconds = await getSongDuration(youtubeLink);
+            
+            if (durationInSeconds > 360) {
+              console.log('Song duration is greater than 6 minutes');
+            } else {
+              console.log('Song duration is less than or equal to 6 minutes');
+              fetch('/api/play-youtube/', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'youtube_link=' + encodeURIComponent(youtubeLink)
+              }).then(function(response) {
+                if (response.ok) {
+                  //console.log('YouTube video added to queue');
+                } else {
+                  console.log('Error adding YouTube video to queue');
+                }
+              }).catch(function(error) {
+                console.log('Network error:', error);
+              });
+            }
+          } else {
+            console.log('The provided link is not a song video');
+          }
+        } catch (error) {
+          console.log('Error checking if the video is a song:', error);
+        }
+      }
+      function getYouTubeVideoId(link) {
+        var videoId = link.split('v=')[1];
+        var ampersandPosition = videoId.indexOf('&');
+        if (ampersandPosition !== -1) {
+          videoId = videoId.substring(0, ampersandPosition);
+        }
+        return videoId;
+      }  
+    
+      async function isSongVideo(youtubeLink) {
+        try {
+          const videoId = getYouTubeVideoId(youtubeLink);
+          const apiKey = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o';
+          const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
+      
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+      
+          if (data.items.length > 0) {
+            const videoCategory = data.items[0].snippet.categoryId;
+      
+            // Assuming the category ID for song videos is '10' (Music)
+            if (videoCategory === '10') {
+              return true; // It's a song video
+            }
+          }
+      
+          return false; // Not a song video
+        } catch (error) {
+          console.log('Error checking song video:', error);
+          return false; // Error occurred, assume it's not a song video
+        }
+      }      
+      
+      async function getSongDuration(youtubeLink) {
+        try {
+          const videoId = getYouTubeVideoId(youtubeLink);
+          const apiKey = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o';
+          const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=contentDetails`;
+      
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+      
+          if (data.items.length > 0) {
+            const duration = data.items[0].contentDetails.duration;
+            const durationInSeconds = parseDurationToSeconds(duration);
+            return durationInSeconds;
+          }
+      
+          return 0; // Invalid or unavailable duration
+        } catch (error) {
+          console.log('Error fetching song duration:', error);
+          return 0; // Error occurred, assume invalid duration
+        }
+      }
+      
+      function parseDurationToSeconds(duration) {
+        const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+      
+        const hours = (parseInt(match[1]) || 0);
+        const minutes = (parseInt(match[2]) || 0);
+        const seconds = (parseInt(match[3]) || 0);
+      
+        return hours * 3600 + minutes * 60 + seconds;
+      }
+
+        var playButtons = document.querySelectorAll('button[data-song-id]');
+        playButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             var songId = button.getAttribute('data-song-id');
             var songLink = button.getAttribute('data-song-link');
@@ -135,7 +242,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: 'song_id=' + encodeURIComponent(songId) + '&song_link=' + encodeURIComponent(songLink)
+                body: '&song_link=' + encodeURIComponent(songLink)
             }).then(function(response) {
                 if (response.ok) {
                     console.log('Song added to queue');
@@ -147,6 +254,9 @@
             });
         });
     });
+
+    var playYouTubeButton = document.getElementById("play-youtube-button");
+    
 </script>
 
 
