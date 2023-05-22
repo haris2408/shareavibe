@@ -36,7 +36,7 @@ class CustomUser(AbstractBaseUser):
     password = models.CharField(max_length=255)
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,null=True)
     is_admin = models.BooleanField(default=False)
-
+    is_login=models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     
 class Song(models.Model):

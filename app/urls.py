@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2
+from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
@@ -8,6 +8,7 @@ import app.views as views
 urlpatterns = [
     #path('add-user/', add_user, name='add_user'),
     #path('add-cafe/', add_cafe, name='add_cafe'),
+    path('logout_view/', logout_view, name='logout_view'),
     path('login/homeadmin/', homeadmin, name='homeadmin'),
     path('login/homeadmin/add_cafe/', add_cafe, name='add_cafe'),
     path('login/homeadmin/add_user/', add_user, name='add_user'),

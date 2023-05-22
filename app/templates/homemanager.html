@@ -116,7 +116,7 @@
     </ul>
     <a href="{% url 'playlists' %}" class="btn btn-primary mb-3">Playlist</a>
     <br>
-    
+    <button id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button>
     {% else %}
     <p>Cafe is currently inactive.</p>
     {% endif %}
@@ -310,7 +310,7 @@
     } else if (!isVideoPlaying()) {
       location.reload();
     }
-  }, 5000);
+  }, 15000);
   function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.ENDED) {
       event.target.destroy();
@@ -439,6 +439,10 @@
         }
       })
       .catch(error => console.error(error));
+  }
+
+  function logout() {
+    window.location.href = "{% url 'logout_view' %}";
   }
 
   function getCookie(name) {

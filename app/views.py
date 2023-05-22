@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.forms import model_to_dict
-from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue
+from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue,CafeBlacklist,GlobalBlacklist
 from django.shortcuts import get_object_or_404, render,redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.utils import timezone
 from googleapiclient.discovery import build
+from django.contrib.auth import logout
 import re
 import json
 from django.core.serializers import serialize
@@ -17,6 +18,18 @@ import json
 from .helper_functions.is_point_in_polygon import is_inside_polygon
 from .helper_functions.is_cafe_in_radius import get_cafes_within_radius
 from .serializers import cafeSerializer, addressSerializer
+
+def logout_view(request):
+    cafe_id = request.session.get('cafe_id')
+    if cafe_id:
+        try:
+            user = CustomUser.objects.get(cafe_id=cafe_id)
+            user.is_login = False
+            user.save()
+        except CustomUser.DoesNotExist:
+            pass
+
+    return redirect('login')
 
 
 def update_queueisplayed(request):
@@ -328,6 +341,8 @@ def makelogin(request):
         if user is not None and password==user.password:
             # Get the cafe associated with the user
             cafe = user.cafe
+            user.is_login=True
+            user.save()
             if user.is_admin==False:
                 return redirect('homemanager')
             else:
