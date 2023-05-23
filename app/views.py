@@ -19,6 +19,56 @@ from .helper_functions.is_point_in_polygon import is_inside_polygon
 from .helper_functions.is_cafe_in_radius import get_cafes_within_radius
 from .serializers import cafeSerializer, addressSerializer
 
+def globalblacklist(request):
+    cafe_id = request.session.get('cafe_id')
+    if request.method == 'POST':
+        
+        # Extract the song link from the form data
+        blacklist_link = request.POST['blacklist_link']
+        existing_blacklist = GlobalBlacklist.objects.filter(song_link=blacklist_link).exists()
+        if existing_blacklist:
+            # Display a message indicating that the song is already blacklisted
+            messages.info(request, 'This song is already blacklisted.')
+        else:
+            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            video_id = re.search(r'(?<=v=)[^&]+', blacklist_link).group()
+            video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+            song_name = video_info['items'][0]['snippet']['title']
+            # Create a new Song object with the extracted link and the playlist object
+            blacklist = GlobalBlacklist.objects.create(song_link=blacklist_link,song_name=song_name)
+        return redirect('globalblacklist')
+  
+    blacklists = GlobalBlacklist.objects.all()
+    
+    context = {'blacklists': blacklists}
+    return render(request, 'globalblacklist.html', context)
+
+def cafeblacklist(request):
+    cafe_id = request.session.get('cafe_id')
+    if request.method == 'POST':
+        
+        # Extract the song link from the form data
+        blacklist_link = request.POST['blacklist_link']
+        existing_blacklist = CafeBlacklist.objects.filter(song_link=blacklist_link, cafe_id=cafe_id).exists()
+        if existing_blacklist:
+            # Display a message indicating that the song is already blacklisted
+            messages.info(request, 'This song is already blacklisted.')
+        else:
+            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            youtube = build('youtube', 'v3', developerKey=api_key)
+            video_id = re.search(r'(?<=v=)[^&]+', blacklist_link).group()
+            video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+            song_name = video_info['items'][0]['snippet']['title']
+            # Create a new Song object with the extracted link and the playlist object
+            blacklist = CafeBlacklist.objects.create(song_link=blacklist_link,song_name=song_name,cafe_id=cafe_id)
+        return redirect('cafeblacklist')
+  
+    blacklists = CafeBlacklist.objects.filter(cafe_id=cafe_id).values('song_name', 'song_link')
+    
+    context = {'blacklists': blacklists}
+    return render(request, 'cafeblacklist.html', context)
+
 def logout_view(request):
     cafe_id = request.session.get('cafe_id')
     if cafe_id:
