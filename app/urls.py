@@ -30,5 +30,7 @@ urlpatterns = [
     path('verify/<lat>/<long>', views.verify_coord, name='verify_coord'),
     path('getcafes/<lat>/<long>', views.get_cafes, name='get_cafes'),
     path('api/play-youtube/', play_youtube, name='play_youtube'),
+    path('api/get_playlist/<cafe_id>', views.get_playlist, name='get_playlist'),
+    path('api/get_songs/<playlist_id>', views.get_songs, name='get_songs'),
     # Add other URL patterns as necessary
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

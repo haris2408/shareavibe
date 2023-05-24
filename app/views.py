@@ -435,3 +435,27 @@ def get_cafes(request,lat,long):
 
 def thisIsjustatest(request):
     return JsonResponse({'status':'success'})
+
+def get_playlist(request,cafe_id):
+    if request.method == 'GET':
+        # cafe_id = request.GET.get('cafe_id')
+        cafe_id = int(cafe_id)
+        playlists = Playlist.objects.filter(cafe_id=cafe_id)
+        print(playlists)
+        if playlists:
+            playlists = [model_to_dict(playlist) for playlist in playlists]
+            return JsonResponse({'status':'success','playlists':playlists})
+    return JsonResponse({'status':'failure'})
+
+def get_songs(request, playlist_id):
+    if request.method == 'GET':
+        # playlist_id = request.data.get('playlist_id')
+        playlist_id = int(playlist_id)
+        songs = Song.objects.filter(playlist_id=playlist_id)
+        if songs:
+            songs_list = []
+            for song in songs:
+                song_dict = model_to_dict(song)
+                songs_list.append(song_dict)
+            return JsonResponse({'status':'success','songs':songs_list})
+    return JsonResponse({'status':'failure'})
