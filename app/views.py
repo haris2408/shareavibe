@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.forms import model_to_dict
-from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue,CafeBlacklist,GlobalBlacklist
+from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue,CafeBlacklist,GlobalBlacklist,MobileAppUsers
 from django.shortcuts import get_object_or_404, render,redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -18,6 +18,9 @@ import json
 from .helper_functions.is_point_in_polygon import is_inside_polygon
 from .helper_functions.is_cafe_in_radius import get_cafes_within_radius
 from .serializers import cafeSerializer, addressSerializer
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
+
 
 def globalblacklist(request):
     cafe_id = request.session.get('cafe_id')
@@ -459,3 +462,104 @@ def get_songs(request, playlist_id):
                 songs_list.append(song_dict)
             return JsonResponse({'status':'success','songs':songs_list})
     return JsonResponse({'status':'failure'})
+
+
+def login_mobile(request):
+    # use MobileAppUsers model, generate and store a session id for the user and send it back to the app
+    if request.method == 'POST':
+        print("in login_mobile")
+        body = json.loads(request.body)
+        email = body['email']
+        password = body.POST['password']
+        try:
+            user = MobileAppUsers.objects.get(email=email)
+        except MobileAppUsers.DoesNotExist:
+            user = None
+        if user is not None and password==user.password:
+            # generate a session id for the user
+            session_id = uuid.uuid4()
+            # store the session id in the database
+            user.session_id = session_id
+            user.save()
+            
+            # send back the session id and email to the app
+            return JsonResponse({'status':'success','session_id':session_id,'user':model_to_dict(user)})
+            
+        else:
+            print(password)
+            # Login failed, display error message on the login form
+            return JsonResponse({'status':'failure'})
+    else:
+        return JsonResponse({'status':'failure'})
+
+@csrf_exempt
+def signup_mobile(request):
+    # name email and password received from the app
+    if request.method == 'POST':
+        print("in signup_mobile")
+        print(request.body)
+        body = json.loads(request.body)
+        name = body['name']
+        email = body['email']
+        password = body['password']
+        
+        # create a new user
+        user = MobileAppUsers.objects.create(name=name,email=email,password=password)
+        
+        #check if the user was created successfully
+        if user is None:
+            return JsonResponse({'status':'failure'})
+        else:
+            # save user and send back success message
+            user.save()
+            return JsonResponse({'status':'success'})
+        
+    else:
+        return JsonResponse({'status':'failure'})
+    
+def logout_mobile(request):
+    # get the session id from the app
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        session_id = body['session_id']
+        
+        # get the user with this session id
+        try:
+            user = MobileAppUsers.objects.get(session_id=session_id)
+        except MobileAppUsers.DoesNotExist:
+            user = None
+            
+        # check if the user exists
+        if user is not None:
+            # delete the session id
+            user.session_id = None
+            user.save()
+            return JsonResponse({'status':'success'})
+        else:
+            return JsonResponse({'status':'failure'})
+    else:
+        return JsonResponse({'status':'failure'})
+    
+def verify_session_mobile(request):
+    # get the session id from the app
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        session_id = body['session_id']
+        
+        # get the user with this session id
+        try:
+            user = MobileAppUsers.objects.get(session_id=session_id)
+        except MobileAppUsers.DoesNotExist:
+            user = None
+            
+        # check if the user exists
+        if user is not None:
+            return JsonResponse({'status':'success'})
+        else:
+            return JsonResponse({'status':'failure'})
+    else:
+        return JsonResponse({'status':'failure'})
+
+def get_csrf_token(request):
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})

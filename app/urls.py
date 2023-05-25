@@ -32,5 +32,11 @@ urlpatterns = [
     path('api/play-youtube/', play_youtube, name='play_youtube'),
     path('api/get_playlist/<cafe_id>', views.get_playlist, name='get_playlist'),
     path('api/get_songs/<playlist_id>', views.get_songs, name='get_songs'),
+    path('api/login_mobile', views.login_mobile, name='login_mobile'),
+    path('api/signup_mobile', views.signup_mobile, name='signup_mobile'),
+    path('api/logout_mobile', views.logout_mobile, name='logout_mobile'),
+    path('api/verify_session_mobile', views.verify_session_mobile, name='verify_session_mobile'),
+    path('get_csrf_token/', views.get_csrf_token, name='get-csrf-token'),
+
     # Add other URL patterns as necessary
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
