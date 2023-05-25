@@ -78,3 +78,17 @@ class Address(models.Model):
     def __str__(self):
         return self.full_address
     
+class MobileAppUsers(models.Model):
+    id = models.AutoField(primary_key=True, auto_created=True, unique=True)
+    name = models.CharField(max_length=255,null=True)
+    email = models.EmailField(unique=True)
+    contact = models.CharField(max_length=20, null=True)
+    password = models.CharField(max_length=255, null=False)
+    profile_pic = models.ImageField(upload_to='profile_pics', null=True, blank=True)
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,null=True)
+    token_no = models.IntegerField(null=True, default=-1)
+    longitude = models.FloatField(default = 0.0, max_length=25)
+    latitude = models.FloatField(default = 0.0, max_length=25)
+    no_of_pushes = models.IntegerField(default=1)
+    session_id = models.CharField(max_length=255,null=True)
+    USERNAME_FIELD = 'email'
