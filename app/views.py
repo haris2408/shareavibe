@@ -1,3 +1,4 @@
+import uuid
 from django.contrib import messages
 from django.forms import model_to_dict
 from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue,CafeBlacklist,GlobalBlacklist,MobileAppUsers
@@ -463,19 +464,24 @@ def get_songs(request, playlist_id):
             return JsonResponse({'status':'success','songs':songs_list})
     return JsonResponse({'status':'failure'})
 
-
+@csrf_exempt
 def login_mobile(request):
     # use MobileAppUsers model, generate and store a session id for the user and send it back to the app
     if request.method == 'POST':
         print("in login_mobile")
         body = json.loads(request.body)
+        
         email = body['email']
-        password = body.POST['password']
+        password = body['password']
+        print(email)
+        print(password)
+
         try:
             user = MobileAppUsers.objects.get(email=email)
         except MobileAppUsers.DoesNotExist:
             user = None
-        if user is not None and password==user.password:
+        print(user)
+        if user and password==user.password:
             # generate a session id for the user
             session_id = uuid.uuid4()
             # store the session id in the database
@@ -483,7 +489,7 @@ def login_mobile(request):
             user.save()
             
             # send back the session id and email to the app
-            return JsonResponse({'status':'success','session_id':session_id,'user':model_to_dict(user)})
+            return JsonResponse({'status':'success','session_id':session_id,'user':model_to_dict(user, exclude=['profile_pic'])})
             
         else:
             print(password)
@@ -516,7 +522,7 @@ def signup_mobile(request):
         
     else:
         return JsonResponse({'status':'failure'})
-    
+@csrf_exempt    
 def logout_mobile(request):
     # get the session id from the app
     if request.method == 'POST':
@@ -539,7 +545,7 @@ def logout_mobile(request):
             return JsonResponse({'status':'failure'})
     else:
         return JsonResponse({'status':'failure'})
-    
+@csrf_exempt    
 def verify_session_mobile(request):
     # get the session id from the app
     if request.method == 'POST':
