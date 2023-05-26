@@ -573,6 +573,7 @@ def get_csrf_token(request):
 @csrf_exempt
 def add_to_queue_mobile(request):
     if request.method == 'POST':
+        print(f"********body: {request.body}")
         body = json.loads(request.body)
         youtube_link = body.get('youtube_link','')
         cafe_id = body.get('cafe_id', '')
@@ -601,7 +602,8 @@ def add_to_queue_mobile(request):
                 next_token = cafe.next_token
                 api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
                 youtube = build('youtube', 'v3', developerKey=api_key)
-                video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
+                video_id = youtube_link.split('/')[-1]
+                # video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
                 video_info = youtube.videos().list(part='snippet', id=video_id).execute()
                 song_name = video_info['items'][0]['snippet']['title']
                 
