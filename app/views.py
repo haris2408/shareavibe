@@ -569,3 +569,46 @@ def verify_session_mobile(request):
 def get_csrf_token(request):
     token = get_token(request)
     return JsonResponse({'csrfToken': token})
+
+@csrf_exempt
+def add_to_queue_mobile(request):
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        youtube_link = body.get('youtube_link','')
+        cafe_id = body.get('cafe_id', '')
+        session_id = body.get('session_id', '')
+        # Check if the youtube_link is blacklisted
+        if cafe_id and youtube_link and session_id:
+            try:
+                user = MobileAppUsers.objects.get(session_id=session_id)
+            except MobileAppUsers.DoesNotExist:
+                user = None
+            if user is None:
+                print('User not found')
+                return JsonResponse({'success': False, 'error': 'session ended'})
+            is_blacklisted2 = GlobalBlacklist.objects.filter(song_link=youtube_link).exists()
+            
+            if is_blacklisted2:
+                print('This song is globally blacklisted')
+                return JsonResponse({'success': False, 'error': 'This song is globally blacklisted'})
+            is_blacklisted = CafeBlacklist.objects.filter(cafe_id=cafe_id,song_link=youtube_link).exists()
+            if is_blacklisted:
+                print('This song is blacklisted')
+                return JsonResponse({'success': False, 'error': 'This song is blacklisted'})
+            else:
+                cafe = Cafe.objects.get(id=cafe_id)
+                next_token = cafe.next_token
+                api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+                youtube = build('youtube', 'v3', developerKey=api_key)
+                video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
+                video_info = youtube.videos().list(part='snippet', id=video_id).execute()
+                song_name = video_info['items'][0]['snippet']['title']
+                
+                queue = Queue.objects.create(song_link=youtube_link,date=timezone.now(),cafe_id=cafe_id,song_name=song_name)
+                queue.token_no=next_token
+                user.token_no = next_token
+                cafe.next_token += 1
+                cafe.save()
+                queue.save()
+                return JsonResponse({'success': True,'token':queue.token_no})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
