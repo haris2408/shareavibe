@@ -579,6 +579,7 @@ def add_to_queue_mobile(request):
         session_id = body.get('session_id', '')
         # Check if the youtube_link is blacklisted
         if cafe_id and youtube_link and session_id:
+            cafe_id = int(cafe_id)
             try:
                 user = MobileAppUsers.objects.get(session_id=session_id)
             except MobileAppUsers.DoesNotExist:

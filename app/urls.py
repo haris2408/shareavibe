@@ -36,7 +36,7 @@ urlpatterns = [
     path('api/signup_mobile', views.signup_mobile, name='signup_mobile'),
     path('api/logout_mobile', views.logout_mobile, name='logout_mobile'),
     path('api/verify_session_mobile', views.verify_session_mobile, name='verify_session_mobile'),
-    path('api/add_to_queue_mobile', viewss.add_to_queue_mobile, name = 'add_to_queue_mobile'),
+    path('api/add_to_queue_mobile', views.add_to_queue_mobile, name = 'add_to_queue_mobile'),
     path('get_csrf_token/', views.get_csrf_token, name='get-csrf-token'),
 
     # Add other URL patterns as necessary
