@@ -113,6 +113,7 @@
                         <p>{{ song.song_link }}</p>
                         <p>{{ song.song_name }}</p>
                     </div>
+                    <button type="button" data-song-id="{{ song.id }}" data-song-link="{{ song.song_link }}" onclick="removeSong(event)">Remove</button>
                     <button type="button" data-song-id="{{ song.id }}" data-song-link="{{ song.song_link }}">Play</button>
                 </li>
     {% endfor %}
@@ -127,6 +128,35 @@
 </form>
 </body>
 <script>
+
+  function removeSong(event) {
+    const songId = event.target.getAttribute("data-song-id");
+    const songLink = event.target.getAttribute("data-song-link");
+
+    // Send an AJAX request to the API view to remove the song
+    fetch(`/api/songs/${songId}/remove`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({
+            song_link: songLink,
+        }),
+    })
+        .then(response => {
+            if (response.ok) {
+                // Remove the song from the DOM if successfully deleted
+                event.target.parentNode.remove();
+            } else {
+                // Handle error if removal fails
+                console.error("Failed to remove song.");
+            }
+        })
+        .catch(error => {
+            console.error("An error occurred:", error);
+        });
+  } 
     async function playYouTube() {
         var youtubeLink = document.getElementById("youtube-link").value;
         

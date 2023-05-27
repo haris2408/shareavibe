@@ -103,6 +103,7 @@
                     <p>{{ blacklist.song_link }}</p>
                     <p>{{ blacklist.song_name }}</p>
                 </div>
+                <button type="button" onclick="removeBlacklistSong('{{ blacklist.id }}')">Remove</button>
             </li>
         {% endfor %}
         </ul>
@@ -111,3 +112,27 @@
     {% endif %}
 </body>
 </html>
+<script>
+    function removeBlacklistSong(Gblacklist_song_id) {
+        // Send an AJAX request to the API view to remove the song from the blacklist
+        fetch(`/api/Gblacklists/${Gblacklist_song_id}/remove`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Refresh the page to update the blacklist songs list
+                    window.location.reload();
+                } else {
+                    // Handle error if removal fails
+                    console.error("Failed to remove blacklist song.");
+                }
+            })
+            .catch(error => {
+                console.error("An error occurred:", error);
+            });
+    }
+</script>

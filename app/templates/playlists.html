@@ -99,6 +99,7 @@
         <ul>
         {% for playlist in playlists %}
             <li><a href="{% url 'add_song' playlist_id=playlist.id %}">{{ playlist.playlist_name }}</a></li>
+            <button type="button" onclick="removePlaylist('{{ playlist.id }}')">Remove</button>
         {% endfor %}
         </ul>
     {% else %}
@@ -106,3 +107,27 @@
     {% endif %}
 </body>
 </html>
+<script>
+    function removePlaylist(playlist_id) {
+        // Send an AJAX request to the API view to remove the song from the blacklist
+        fetch(`/api/playlists/${playlist_id}/remove`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    
+                    window.location.reload();
+                } else {
+                    // Handle error if removal fails
+                    console.error("Failed to remove playlist.");
+                }
+            })
+            .catch(error => {
+                console.error("An error occurred:", error);
+            });
+    }
+</script>

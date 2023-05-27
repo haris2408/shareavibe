@@ -23,6 +23,52 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
 
+@csrf_exempt
+def remove_playlist(request, playlist_id):
+    try:
+        playlist = Playlist.objects.get(id=playlist_id)
+        songs = Song.objects.filter(playlist=playlist)
+        songs.delete()
+        playlist.delete()
+        return JsonResponse({"message": "Playlist and associated songs removed successfully."})
+    except Playlist.DoesNotExist:
+        return JsonResponse({"message": "Playlist not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"message": "An error occurred.", "error": str(e)}, status=500)
+
+@csrf_exempt  # Disabling CSRF protection for simplicity. Make sure to enable it in production.
+def remove_Gblacklist_song(request, Gblacklist_song_id):
+    try:
+        blacklist_song = GlobalBlacklist.objects.get(id=Gblacklist_song_id)
+        blacklist_song.delete()
+        return JsonResponse({"message": "Blacklist song removed successfully."})
+    except CafeBlacklist.DoesNotExist:
+        return JsonResponse({"message": "Blacklist song not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"message": "An error occurred.", "error": str(e)}, status=500)
+
+@csrf_exempt  # Disabling CSRF protection for simplicity. Make sure to enable it in production.
+def remove_blacklist_song(request, blacklist_song_id):
+    try:
+        blacklist_song = CafeBlacklist.objects.get(id=blacklist_song_id)
+        blacklist_song.delete()
+        return JsonResponse({"message": "Blacklist song removed successfully."})
+    except CafeBlacklist.DoesNotExist:
+        return JsonResponse({"message": "Blacklist song not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"message": "An error occurred.", "error": str(e)}, status=500)
+    
+@csrf_exempt  # Disabling CSRF protection for simplicity. Make sure to enable it in production.
+def remove_song(request, song_id):
+    try:
+        song = Song.objects.get(id=song_id)
+        song.delete()
+        return JsonResponse({"message": "Song removed successfully."})
+    except Song.DoesNotExist:
+        return JsonResponse({"message": "Song not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"message": "An error occurred.", "error": str(e)}, status=500)
+    
 def globalblacklist(request):
     cafe_id = request.session.get('cafe_id')
     if request.method == 'POST':
@@ -68,7 +114,7 @@ def cafeblacklist(request):
             blacklist = CafeBlacklist.objects.create(song_link=blacklist_link,song_name=song_name,cafe_id=cafe_id)
         return redirect('cafeblacklist')
   
-    blacklists = CafeBlacklist.objects.filter(cafe_id=cafe_id).values('song_name', 'song_link')
+    blacklists = CafeBlacklist.objects.filter(cafe_id=cafe_id).values('id','song_name', 'song_link')
     
     context = {'blacklists': blacklists}
     return render(request, 'cafeblacklist.html', context)
