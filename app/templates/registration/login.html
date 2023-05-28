@@ -1,112 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-image: url("/images/t1.png");
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+            }
+            
+            .container {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                height: 100vh;
+                padding: 0 10%;
+            }
+            
+            .logo {
+                flex: 1;
+                text-align: left;
+                padding: 30px;
+            }
+            
+            .right-container {
+                flex: 1;
+                padding: 30px;
+                background-color: rgba(254, 159, 36, 0.2);
+                border-radius: 20px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+                max-width: 400px;
+            }
+            
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: none;
+            }
+            
+            label {
+                display: block;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+            
+            input[type="email"],
+            input[type="password"] {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid orange;
+                border-radius: 20px;
+                outline: none;
+            }
+            
+            input[type="submit"] {
+                display: block;
+                width: 35%;
+                padding: 10px;
+                background-color: orange;
+                color: white;
+                border: none;
+                border-radius: 20px;
+                font-size: 16px;
+                cursor: pointer;
+                margin-top: 20px;
+            }
+            
+            input[type="submit"]:hover {
+                background-color: #FDD580;
+            }
+            
+            .messages {
+                list-style-type: none;
+                padding: 0;
+                margin-top: 20px;
+            }
+            
+            .messages li {
+                background-color: #f44336;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+            }
+            
+            @media only screen and (max-width: 768px) {
+                .container {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .logo {
+                    text-align: center;
+                    padding: 30px 0;
+                }
+                .right-container {
+                    margin-top: 30px;
+                    max-width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo">
+                <!-- Place your logo here -->
+                <img src="/images/web_logo.png" alt="Logo">
+            </div>
+            <div class="right-container">
+                <h2>Login</h2>
+                <form method="POST" action="{% url 'makelogin' %}">
+                    {% csrf_token %}
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <input type="submit" value="Login">
+                </form>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                        {% endfor %}
+                </ul>
+                <script>
+                    // Wait for 5 seconds before hiding the messages
+                    setTimeout(function() {
+                        var messages = document.getElementsByClassName('messages')[0];
+                        messages.style.display = 'none';
+                    }, 5000);
+                </script>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+    
+    </html>
 
-        body {
-            font-family: Arial, sans-serif;
-            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    <script>
+        // Wait for 5 seconds before hiding the messages
+        setTimeout(function() {
+            var messages = document.getElementsByClassName('messages')[0];
+            messages.style.display = 'none';
+        }, 5000);
 
-        .login-container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            width: 400px;
-            max-width: 90%;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        input[type="submit"] {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .messages {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .messages li {
-            background-color: #f44336;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form method="POST" action="{% url 'makelogin' %}">
-            {% csrf_token %}
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <input type="submit" value="Login">
-        </form>
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        <script>
-            // Wait for 5 seconds before hiding the messages
-            setTimeout(function() {
-                var messages = document.getElementsByClassName('messages')[0];
-                messages.style.display = 'none';
-            }, 5000);
-        </script>
-        {% endif %}
-    </div>
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginForm = document.querySelector('.right-container form');
+            
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                var formData = new FormData(loginForm);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/login');
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.status === 'success') {
+                            // Session is verified, continue with loading the homemanager.html page
+                            console.log('Session verified');
+                            localStorage.setItem('session_id', response.session_id);
+                            localStorage.setItem('user', JSON.stringify(response.user));
+                            if (response.user.is_admin) {
+                                // User is admin, redirect to homeadmin.html
+                                window.location.href = '/login/homeadmin/'; // Replace with the actual URL of homeadmin.html
+                            } else {
+                                // User is not admin, redirect to homemanager.html
+                                window.location.href = '/login/homemanager/'; // Replace with the actual URL of homemanager.html
+                            }
+                        } else {
+                            // Session is not verified, display error message or redirect to the login page
+                            console.log('Session not verified');
+                            // Display error message or redirect to login page
+                        }
+                    } else {
+                        console.log('Request failed. Status:', xhr.status);
+                    }
+                };
+                xhr.send(formData);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,116 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Cafe</title>
     <style>
         body {
-            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
         }
-
-        h1 {
-            
-            color: black;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
+        
+        .navbar {
+            background-color: orange;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        form {
-            max-width: 400px;
-            margin: 30px auto;
-            background-color: rgba(255, 255, 255, 0.9);
+        
+        .logo {
+            color: #fff;
+            font-size: 24px;
+            text-decoration: none;
+        }
+        
+        .add-cafe-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 150vh;
+        }
+        
+        .add-info-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            align-items: left;
+        }
+        
+        .add-cafe-container .logo-container {
+            width: 70%;
+            height: 5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-cafe-container .logo-container .logo-image {
+            width: 15%;
+            padding-bottom: 5%;
+            border-radius: 50%;
+            background-color: #f2f2f2;
+            position: relative;
+            height: 200%;
+            overflow: hidden;
+            border-color: black;
+        }
+        
+        .add-cafe-container .logo-container .logo-image img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button {
+            position: absolute;
+            top: 30%;
+            left: 53%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button:before,
+        .add-cafe-container .add-cafe-circle .plus-button:after {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #000;
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button:before {
+            transform: rotate(90deg);
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button:after {
+            transform: rotate(0deg);
+        }
+        
+        .add-cafe-container .add-cafe-form {
+            margin-top: 50px;
+            width: 50%;
+        }
+        
+        .add-cafe-container .add-cafe-form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .add-cafe-container .add-cafe-form input[type="text"],
+        .add-cafe-container .add-cafe-form input[type="tel"],
+        .add-cafe-container .add-cafe-form input[type="email"],
+        .add-cafe-container .add-cafe-form input[type="password"],
+        .add-cafe-container .add-cafe-form input[type="float"] {
+            width: 50%;
+            padding: 5px;
+            border-radius: 20px;
+            margin: 5px;
+            border-color: #FFD580;
+        }
+        
+        .add-cafe-container .add-cafe-form input[type="address"] {
+            width: 80%;
             padding: 20px;
             border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 5px;
+            border-color: #FFD580;
         }
-
-        label {
-            display: block;
-            font-size: 16px;
-            margin: 12px 0;
-        }
-
-        input {
-            width: 100%;
-            font-size: 14px;
-            padding: 5px;
-            border: 2px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            font-size: 18px;
-            background-color: #45a049;
+        
+        .add-cafe-container .add-cafe-form input[type="submit"] {
+            padding: 10px 10px;
+            background-color: orange;
             color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 20px;
-            cursor: pointer;
-            display: block;
-            margin: 20px auto 0;
+            border-radius: 20px;
+            border-color: none;
         }
-
-        input[type="submit"]:hover {
-            background-color: #3a78c2;
+        
+        .add-cafe-form input[type="submit"]:hover {
+            background-color: #FFD580;
         }
     </style>
+
 </head>
+
 <body>
-    
-    <form method="POST" action="{% url 'add_cafe' %}" enctype="multipart/form-data">
-      <h1>Add Cafe</h1>
-        {% csrf_token %}
-        <label for="logo">Cafe Logo:</label>
-        <input type="file" id="logo" name="logo">
+    <div class="navbar">
+        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+    </div>
 
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" required>
+    <div class="add-cafe-container">
 
-        <label for="cafe_name">Cafe Name:</label>
-        <input type="text" id="cafe_name" name="cafe_name" required>
+        <form class="add-cafe-form" method="POST" action="{% url 'add_cafe' %}" enctype="multipart/form-data">
 
-        <label for="area">Area:</label>
-        <input type="text" id="area" name="area" required>
+            {% csrf_token %}
+            <br><br>
+            <label for="address">Address:</label>
+            <input type="address" id="address" name="address" required>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+            <label for="cafe_name">Cafe Name:</label>
+            <input type="text" id="cafe_name" name="cafe_name" required>
 
-        <label for="contact">Contact:</label>
-        <input type="tel" id="contact" name="contact" required>
+            <label for="area">Area:</label>
+            <input type="text" id="area" name="area" required>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
 
-        <label for="tllat">Top Left lat:</label>
-        <input type="float" id="tllat" name="tllat" required>
+            <label for="contact">Contact:</label>
+            <input type="tel" id="contact" name="contact" required>
 
-        <label for="tllong">Top Left long:</label>
-        <input type="float" id="tllong" name="tllong" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
 
-        <label for="trlat">Top Right lat:</label>
-        <input type="float" id="trlat" name="trlat" required>
+            <label for="tllat">Top Left lat:</label>
+            <input type="float" id="tllat" name="tllat" required>
 
-        <label for="trlong">Top Right long:</label>
-        <input type="float" id="trlong" name="trlong" required>
+            <label for="tllong">Top Left long:</label>
+            <input type="float" id="tllong" name="tllong" required>
 
-        <label for="bllat">Bottom Left lat:</label>
-        <input type="float" id="bllat" name="bllat" required>
+            <label for="trlat">Top Right lat:</label>
+            <input type="float" id="trlat" name="trlat" required>
 
-        <label for="bllong">Bottom Left long:</label>
-        <input type="float" id="bllong" name="bllong" required>
+            <label for="trlong">Top Right long:</label>
+            <input type="float" id="trlong" name="trlong" required>
 
-        <label for="brlat">Bottom Right lat:</label>
-        <input type="float" id="brlat" name="brlat" required>
+            <label for="bllat">Bottom Left lat:</label>
+            <input type="float" id="bllat" name="bllat" required>
 
-        <label for="brlong">Bottom Right long:</label>
-        <input type="float" id="brlong" name="brlong" required>
+            <label for="bllong">Bottom Left long:</label>
+            <input type="float" id="bllong" name="bllong" required>
 
-  <input type="submit" value="Add Cafe">
-</form>
+            <label for="brlat">Bottom Right lat:</label>
+            <input type="float" id="brlat" name="brlat" required>
+
+            <label for="brlong">Bottom Right long:</label>
+            <input type="float" id="brlong" name="brlong" required>
+
+            <input type="submit" value="Add Cafe">
+        </form>
+    </div>
+    </div>
+</body>
+
+</html>

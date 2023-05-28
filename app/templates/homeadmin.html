@@ -1,12 +1,158 @@
-{% block content %}
-  <p>Welcome admin</p>
-  <a href="{% url 'add_cafe' %}" class="btn btn-primary">Add Cafe</a>
-  <br>
-  <a href="{% url 'add_user' %}" class="btn btn-primary">Add User</a>
-  <br>
-    <a href="{% url 'globalblacklist' %}" class="btn btn-primary mb-3">GlobalBlacklist</a>
-  <br>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            background-color: #F9F9F9;
+            padding: 30px;
+            margin: 30px auto;
+            width: 80%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        
+        .row {
+            margin-bottom: 20px;
+        }
+        
+        .col-lg-4 {
+            text-align: center;
+        }
+        
+        .col-lg-8 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .btn {
+            background-color: #FE9F24;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        
+        .btn:hover {
+            background-color: #F6BB30;
+        }
+        
+        .cafe-item {
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid orange;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        .cafe-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .cafe-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            color: #fff;
+            font-size: 24px;
+            text-decoration: none;
+        }
+        
+        .navbar {
+            background-color: orange;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        h4 {
+            text-align: center;
+        }
+    </style>
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="navbar ">
+
+        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="buttons-container">
+                    <p>Welcome admin</p>
+                    <a href="{% url 'add_cafe' %}" class="btn btn-primary">Add Cafe</a>
+                    <br>
+                    <a href="{% url 'add_user' %}" class="btn btn-primary">Add User</a>
+                    <br>
+                    <a href="{% url 'globalblacklist' %}" class="btn btn-primary mb-3">Global Blacklist</a>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="cafes-container">
+                    <!-- Cafe 1 -->
+                    <div class="cafe-item">
+                        <div class="cafe-content">
+                            <img src="cafe1-logo.jpg" alt="Cafe 1" class="cafe-logo">
+                            <h4>Cafe 1</h4>
+                        </div>
+                    </div>
+
+                    <!-- Cafe 2 -->
+                    <div class="cafe-item">
+                        <div class="cafe-content">
+                            <img src="cafe2-logo.jpg" alt="Cafe 2" class="cafe-logo">
+                            <h4>Cafe 2</h4>
+                        </div>
+                    </div>
+
+                    <!-- Cafe 3 -->
+                    <div class="cafe-item">
+                        <div class="cafe-content">
+                            <img src="cafe3-logo.jpg" alt="Cafe 3" class="cafe-logo">
+                            <h4>Cafe 3</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

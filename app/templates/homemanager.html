@@ -1,56 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafe</title>
     <style>
         body {
-            background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            background-color: rgba(255, 255, 255, 0.9);
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
         }
-
+        
+        .navbar {
+            background-color: orange;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo {
+            color: #fff;
+            font-size: 24px;
+            text-decoration: none;
+        }
+        
         #container {
-            background-color: rgba(255, 255, 255, 0.9);
-            
+            background-color: #F9F9F9;
             padding: 30px;
             margin: 30px auto;
             width: 80%;
+            height:10%;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-
+        
+        #container1 {
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+        
         h1 {
             color: #333;
             margin-bottom: 20px;
         }
-
+        
         button {
-            background-color: #4CAF50;
+            background-color: #FE9F24;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 30px;
+            text-align: left;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 4px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        
+        button2,
+        button3 {
+            background-color: #FE9F24;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            text-align: left;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 60px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        
+        button1 {
+            background-color: white;
+            color: orange;
+            border-style: solid;
+            border-color: orange;
+            padding: 10px 5px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            margin: 4px 2px;
+            margin: 150px 80px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 10px;
+            align-items: baseline;
         }
-
+        
+        .align-right {
+            text-align: right;
+            border: 0;
+        }
+        
         button:hover {
-            background-color: #45a049;
+            background-color: #F6BB30;
         }
-
+        
+        button1:hover {
+            background-color: #F6BB30;
+        }
+        
         form {
-           
             margin-bottom: 20px;
         }
-
+        
         input[type=text] {
             width: 100%;
             padding: 12px 20px;
@@ -60,69 +120,113 @@
             border-radius: 4px;
             outline: none;
         }
-
+        
         input[type=text]:focus {
-            border: 2px solid #4CAF50;
+            border: 2px solid;
         }
-
+        
         ul {
             list-style-type: none;
             padding: 0;
         }
-
+        
         li {
             background-color: #ddd;
             padding: 10px;
             margin-bottom: 2px;
             border-radius: 4px;
         }
-
+        
         #queue ul {
             list-style-type: none;
             padding: 0;
         }
-
+        
         #queue li {
             background-color: #eee;
             padding: 10px;
             margin-bottom: 2px;
             border-radius: 4px;
         }
-
+        
+        .bg-orange {
+            background-color: orange;
+            padding: 10px 30px;
+        }
+        
+        .left-container {
+            width: 25%;
+            float: left;
+            border-right: 1px solid #ccc;
+            padding-right: 20px;
+        }
+        
+        .right-container {
+            width: 70%;
+            float: right;
+            padding-right: 20px;
+        }
     </style>
 </head>
+
 <body>
-    <div id="container">
-    <h1>{{ cafe.name }}</h1>
+    <div class="navbar">
+        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+    </div>
+    <div class="container">
 
-    <div id="player"></div>
-    <div id="queue"></div>
+        <div class="col-lg-3 left-container">
+            <div id="container">
 
-    <button id="active-btn" type="button" class="btn btn-primary mb-3" onclick="toggleCafeStatus()">{% if cafe.is_active %}Active{% else %}Inactive{% endif %}</button>
 
-    {% if cafe.is_active %}
-    <form class="form-inline">
-      <input type="text" id="youtube-link" name="youtube_link" class="form-control" placeholder="Paste YouTube link here">
-      <button type="button" class="btn btn-success" onclick="playYouTube()">Play</button>
-  </form>
-    <br>
-    <form id="blacklist-form" class="form-inline">
-        <input type="text" id="blacklist-link" class="form-control" placeholder="Add link to blacklist">
-        <button type="button" class="btn btn-danger" onclick="addToBlacklist()">Add to Blacklist</button>
-    </form>
-    <p>Is Active: {{ cafe.is_active }}</p>
-    <p>Current Token: <span id="current-token">{{ cafe.current_token }}</span></p>
-    <p>Next Token: {{ cafe.next_token }}</p>
-    </ul>
-    <a href="{% url 'playlists' %}" class="btn btn-primary mb-3">Playlist</a>
-    <br>
-    <a href="{% url 'cafeblacklist' %}" class="btn btn-primary mb-3">Blacklist</a>
-    <br>
-    <button id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button>
-    {% else %}
-    <p>Cafe is currently inactive.</p>
-    {% endif %}
-</div>
+                <h1>{{cafe.name}}</h1>
+                <br>
+                <button2 onclick="window.location.href='{% url 'playlists' %}'" class="btn btn-primary mb-3">Playlist</button2>
+                <br>
+                <button3 onclick="window.location.href='{% url 'cafeblacklist' %}'" class="btn btn-primary mb-3">Blacklist</button3>
+                <br>
+                <button1 id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button1>
+            </div>
+
+
+        </div>
+        <div class="col-lg-12 right-container">
+
+
+          <div id="container" style="display: flex;">
+            <form class="form-inline" style="display: flex;">
+              
+              <input type="text" id="youtube-link" name="youtube_link" class="form-control" placeholder="Paste YouTube link here">
+              <button type="button" class="btn btn-success" onclick="playYouTube()">Play</button>
+            </form>
+          </div>
+                <div id="player"></div>
+                <div id="queue"></div>
+
+                <button id="active-btn" type="button" class="btn btn-primary mb-3" onclick="toggleCafeStatus()">
+                                {% if cafe.is_active %}Active{% else %}Inactive{% endif %}
+                            </button> {% if cafe.is_active %}
+                
+                <!--<br>
+                <form id="blacklist-form" class="form-inline">
+                    <input type="text" id="blacklist-link" class="form-control" placeholder="Add link to blacklist">
+                    <button type="button" class="btn btn-danger" onclick="addToBlacklist()">Add to Blacklist</button>
+                </form>-->
+                <p>Is Active: {{ cafe.is_active }}</p>
+                <p>Current Token: <span id="current-token">{{ cafe.current_token }}</span></p>
+                <p>Next Token: {{ cafe.next_token }}</p>
+                </ul>
+                {% else %}
+                <p>Cafe is currently inactive.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+
+    </div>
+    </div>
+</body>
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>

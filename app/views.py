@@ -120,11 +120,13 @@ def cafeblacklist(request):
     return render(request, 'cafeblacklist.html', context)
 
 def logout_view(request):
+    
     cafe_id = request.session.get('cafe_id')
     if cafe_id:
         try:
             user = CustomUser.objects.get(cafe_id=cafe_id)
             user.is_login = False
+            user.session_id=None
             user.save()
         except CustomUser.DoesNotExist:
             pass
@@ -441,12 +443,16 @@ def makelogin(request):
         if user is not None and password==user.password:
             # Get the cafe associated with the user
             cafe = user.cafe
-            user.is_login=True
+            session_id = uuid.uuid4()
+            # store the session id in the database
+            user.session_id = session_id
             user.save()
-            if user.is_admin==False:
-                return redirect('homemanager')
-            else:
-                return redirect('homeadmin')
+            response_data = {
+                    'status': 'success',
+                    'session_id': session_id,
+                    'user': model_to_dict(user)
+                }
+            return JsonResponse(response_data)
         else:
             print(password)
             # Login failed, display error message on the login form
@@ -540,6 +546,27 @@ def login_mobile(request):
         else:
             print(password)
             # Login failed, display error message on the login form
+            return JsonResponse({'status':'failure'})
+    else:
+        return JsonResponse({'status':'failure'})
+    
+@csrf_exempt    
+def verify_session_web(request):
+    # get the session id from the app
+    if request.method == 'POST':
+        body = json.loads(request.body)
+        session_id = body['session_id']
+        
+        # get the user with this session id
+        try:
+            user = CustomUser.objects.get(session_id=session_id)
+        except CustomUser.DoesNotExist:
+            user = None
+            
+        # check if the user exists
+        if user is not None:
+            return JsonResponse({'status':'success'})
+        else:
             return JsonResponse({'status':'failure'})
     else:
         return JsonResponse({'status':'failure'})

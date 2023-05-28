@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist
+from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
@@ -17,8 +17,8 @@ urlpatterns = [
     path('login/homeadmin/add_cafe/', add_cafe, name='add_cafe'),
     path('login/homeadmin/add_user/', add_user, name='add_user'),
     #path('playlists/', playlist, name='playlists'),
-    path('login/', makelogin, name='makelogin'),
-    path('login/homemanager', homemanager, name='homemanager'),
+    path('login', makelogin, name='makelogin'),
+    path('login/homemanager/', homemanager, name='homemanager'),
     path('login/homemanager/playlists/', playlist, name='playlists'),
     path('login/homemanager/cafeblacklist/', cafeblacklist, name='cafeblacklist'),
     path('login/homeadmin/globalblacklist/', globalblacklist, name='globalblacklist'),
@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/signup_mobile', views.signup_mobile, name='signup_mobile'),
     path('api/logout_mobile', views.logout_mobile, name='logout_mobile'),
     path('api/verify_session_mobile', views.verify_session_mobile, name='verify_session_mobile'),
+    path('api/verify_session_web', views.verify_session_web, name='verify_session_web'),
     path('api/add_to_queue_mobile', views.add_to_queue_mobile, name = 'add_to_queue_mobile'),
     path('get_csrf_token/', views.get_csrf_token, name='get-csrf-token'),
 
