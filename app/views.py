@@ -733,3 +733,146 @@ def add_to_queue_mobile(request):
                 queue.save()
                 return JsonResponse({'success': True,'token':queue.token_no})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+
+
+@csrf_exempt
+def set_user_cafe_mobile(request):
+    if request.method == 'POST':
+        print(f"********body: {request.body}")
+        body = json.loads(request.body)
+        email = body.get('email', '')
+        cafe_id = body.get('cafe_id','')
+        session_id = body.get('session_id', '')
+        try:
+            if email and cafe_id and session_id:
+                try:
+                    user = MobileAppUsers.objects.get(email=email)
+                except MobileAppUsers.DoesNotExist:
+                    user = None
+                if user:
+                    if user.session_id == session_id:
+                        try:
+                            cafe = Cafe.objects.get(id = cafe_id)
+                        except Cafe.DoesNotExist:
+                            cafe = None
+                        if cafe:
+                            user.cafe = cafe
+                            user.save()
+                            print(model_to_dict(user))
+                            return JsonResponse({'status':'success', 'body': 'user added to cafe'})
+                        else:
+                            return JsonResponse({'status':'failuire', 'body': 'cafe not found'})
+                    else:
+                        return JsonResponse({'status':'failuire', 'body': 'user session expired'})
+                else:
+                    return JsonResponse({'status':'failuire', 'body': 'user not found'})
+            else:
+                return JsonResponse({'status':'invalid request'})
+        except Exception as e:
+            print("exception in set_user_cafe_mobile")
+            print(e)
+            return JsonResponse({'status':'error in api'})
+
+
+@csrf_exempt
+def get_current_playing_song(request):
+    if request.method == 'POST':
+        print(f"********body: {request.body}")
+        body = json.loads(request.body)
+        email = body.get('email', '')
+        cafe_id = body.get('cafe_id','')
+        session_id = body.get('session_id', '')
+        try:
+            if email and cafe_id and session_id:
+                cafe_id = int(cafe_id)
+                try:
+                    user = MobileAppUsers.objects.get(email=email)
+                except MobileAppUsers.DoesNotExist:
+                    user = None
+                if user:
+                    print("*****************")
+                    # print(model_to_dict( user))
+                    # print(f"usercafeid: {user.cafe.id}")
+                    if user.session_id == session_id:
+                        try:
+                            user_cafe_id = Cafe.objects.get(id = user.cafe.id)
+                        except Cafe.DoesNotExist:
+                            user_cafe_id = None
+                        if user_cafe_id:
+                            
+                            if user_cafe_id.id == cafe_id:
+                                curr_token_no = user_cafe_id.current_token
+
+                                song_name = Queue.objects.filter(cafe_id = cafe_id,  token_no = curr_token_no)
+                                if song_name:
+                                    song_name = song_name[0].song_name
+                                    # print(curr_token_no,song_name)
+                                    return JsonResponse({'status':'success', 'body':{'curr_token': curr_token_no, 'song_name': song_name}})
+                                else:
+
+                                    return JsonResponse({'status':'failuire', 'body':'no song found'})    
+                            else:
+                                return JsonResponse({'status':'failuire', 'body':'user not in this cafe'})    
+                        else:
+                            return JsonResponse({'status':'failuire', 'body':' cafe not found'})
+                    else:
+                        return JsonResponse({'status':'failuire', 'body': 'user session expired'})    
+                else:
+                    return JsonResponse({'status':'failuire', 'body': 'user not found'})
+            else:
+                return JsonResponse({'status':'invalid request'})
+        except Exception as e:
+            print("exception in get_current_playing_song")
+            print(e)
+            return JsonResponse({'status':'error in api'})
+
+
+@csrf_exempt
+def get_user_token(request):
+    if request.method == 'POST':
+        print(f"********body: {request.body}")
+        body = json.loads(request.body)
+        email = body.get('email', '')
+        cafe_id = body.get('cafe_id','')
+        session_id = body.get('session_id', '')
+        try:
+            if email and cafe_id and session_id:
+                cafe_id = int(cafe_id)
+                try:
+                    user = MobileAppUsers.objects.get(email=email)
+                except MobileAppUsers.DoesNotExist:
+                    user = None
+                if user:
+                    print("*****************")
+                    # print(model_to_dict( user))
+                    # print(f"usercafeid: {user.cafe.id}")
+                    if user.session_id == session_id:
+                        try:
+                            user_cafe_id = Cafe.objects.get(id = user.cafe.id)
+                        except Cafe.DoesNotExist:
+                            user_cafe_id = None
+                        if user_cafe_id:
+                            
+                            if user_cafe_id.id == cafe_id:
+                                toknnum = user.token_no   
+                                if toknnum>=0:
+                                    return JsonResponse({'status':'success', 'body': {'token_num': toknnum}})    
+                                else:
+                                    return JsonResponse({'status':'failuire', 'body': '-'})
+                            else:
+                                return JsonResponse({'status':'failuire', 'body':'user not in this cafe'})    
+                        else:
+                            return JsonResponse({'status':'failuire', 'body':' cafe not found'})
+                    else:
+                        return JsonResponse({'status':'failuire', 'body': 'user session expired'})    
+                else:
+                    return JsonResponse({'status':'failuire', 'body': 'user not found'})
+            else:
+                return JsonResponse({'status':'invalid request'})
+        except Exception as e:
+            print("exception in get_user_token")
+            print(e)
+            return JsonResponse({'status':'error in api'})
+
