@@ -367,7 +367,7 @@ def add_cafe(request):
         address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, topLeft_coord_long = tllong, topRight_coord_lat = trlat, topRight_coord_long = trlong, bottomLeft_coord_lat = bllat, bottomLeft_coord_long = bllong, BottomRight_coord_lat = brlat, BottomRight_coord_long = brlong, cafe=cafe)
 
         # Create the CustomUser object
-        user = CustomUser.objects.create(email=email, contact=contact, password=password, cafe=cafe)
+        user = CustomUser.objects.create(email=email, contact=contact, password=password, cafe=cafe,is_approved=True)
 
         # Redirect to the homepage
         return redirect('homeadmin')
@@ -469,21 +469,35 @@ def makelogin(request):
         if user is not None and password==user.password:
             # Get the cafe associated with the user
             cafe = user.cafe
-            cafe_dict = model_to_dict(cafe)
-            if cafe_dict['logo']:
-                cafe_dict['logo'] = cafe_dict['logo'].url
-            session_id = uuid.uuid4()
-            # store the session id in the database
-            user.session_id = session_id
-            user.save()
-            response_data = {
-                    'status': 'success',
-                    'session_id': session_id,
-                    'user': model_to_dict(user),
-                    'logo' : cafe_dict['logo']
-                    
-                }
-            return JsonResponse(response_data)
+            if user.is_admin:
+                
+                session_id = uuid.uuid4()
+                # store the session id in the database
+                user.session_id = session_id
+                user.save()
+                response_data = {
+                        'status': 'success',
+                        'session_id': session_id,
+                        'user': model_to_dict(user)
+                        
+                    }
+                return JsonResponse(response_data)
+            else:
+                cafe_dict = model_to_dict(cafe)
+                if cafe_dict['logo']:
+                    cafe_dict['logo'] = cafe_dict['logo'].url
+                session_id = uuid.uuid4()
+                # store the session id in the database
+                user.session_id = session_id
+                user.save()
+                response_data = {
+                        'status': 'success',
+                        'session_id': session_id,
+                        'user': model_to_dict(user),
+                        'logo' : cafe_dict['logo']
+                        
+                    }
+                return JsonResponse(response_data)
         else:
             print(password)
             # Login failed, display error message on the login form
