@@ -731,6 +731,7 @@ def add_to_queue_mobile(request):
                 cafe.next_token += 1
                 cafe.save()
                 queue.save()
+                user.save()
                 return JsonResponse({'success': True,'token':queue.token_no})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
@@ -854,9 +855,10 @@ def get_user_token(request):
                         except Cafe.DoesNotExist:
                             user_cafe_id = None
                         if user_cafe_id:
-                            
+                            print(user.token_no)
                             if user_cafe_id.id == cafe_id:
                                 toknnum = user.token_no   
+                                
                                 if toknnum>=0:
                                     return JsonResponse({'status':'success', 'body': {'token_num': toknnum}})    
                                 else:
