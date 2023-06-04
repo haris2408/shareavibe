@@ -169,7 +169,8 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
         
-            <input type="submit" value="Signup">
+            <input type="submit" value="Signup" onclick="showAlert()">
+            
         </form>
         
     </div>
@@ -178,6 +179,9 @@
 
 </html>
 <script>
+    function showAlert() {
+        alert("Our team will contact you shortly. Thankyou!");
+      }
     document.addEventListener('DOMContentLoaded', function() {
         // Retrieve the session ID from the browser's storage
         var sessionID = localStorage.getItem('session_id');

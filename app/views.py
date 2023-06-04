@@ -24,7 +24,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 def get_managers(request):
     manager = CustomUser.objects.filter(is_approved=False).values('email', 'contact', 'password')
-    print(manager)
     return JsonResponse({'get_managers': list(manager)})
 
 def add_manager(request):
@@ -36,7 +35,7 @@ def add_manager(request):
         user = CustomUser.objects.create(email=email, contact=contact, password=password)
 
         # Redirect to the homepage
-        return redirect('homeadmin')
+        return redirect('login')
 
     return render(request, 'signup_manager.html')
 

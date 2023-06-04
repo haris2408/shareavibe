@@ -143,20 +143,29 @@
             border: 1px solid #ddd;
             padding: 10px;
             font-size: 18px;
-            border-radius: 10px; /* Rounded border */
+            border-radius: 10px; 
         }
 
 		
 		
 		.song-list {
-    max-height: 550px; /* Set the maximum height for the scrollable area */
-    overflow-y: auto; /* Enable vertical scrolling */
-}
+            max-height: 550px; 
+            overflow-y: auto; 
+        }
 
-.buttons-container .song-list {
-    max-height: 550px; /* Set the maximum height for the scrollable area */
-    overflow-y: auto; /* Enable vertical scrolling */
-}
+        .buttons-container .song-list {
+            max-height: 550px;
+            overflow-y: auto; 
+        }
+        .manager-list {
+            max-height: 550px; 
+            overflow-y: auto; 
+        }
+
+        .buttons-container .manager-list {
+            max-height: 550px; 
+            overflow-y: auto; 
+        }
 
 		
         
@@ -206,14 +215,12 @@
             <div class="buttons-container">
                 <p>Welcome admin</p>
                 <a href="{% url 'globalblacklist' %}" class="button btn-primary mb-3">Global Blacklist</a>
-                <br>
-                <a href="{% url 'add_manager' %}" class="button btn-primary mb-3">Signup</a>
+                
                  </div>
         </div>
 
         <div class="col-lg-3 right-container">
             <div class="buttons-container">
-				
 				
 				<button id="logout-btn" type="button" class="button btn-danger" >Cafes</button>
 					
@@ -231,25 +238,11 @@
             </div>
         </div>
 		
-
+        
+        <br>
+        <br>
         <div class="col-lg-3 middle-container">
 			<div class="song-list">
-                <h1>GLOBAL BLACKLIST</h1>
-                <table id="global-blacklist-table">
-                    <thead>
-                        <tr>
-                            <th>Song Link</th>
-                            <th>Song Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
-            </div>
-            <br>
-            <br>
-            <div class="manager-list">
                 <h1>Signup Requests</h1>
                 <table id="get-managers-table">
                     <thead>
@@ -257,6 +250,18 @@
                             <th>Email</th>
                             <th>Contact</th>
                             <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+                <h1>Global Blacklist</h1>
+                <table id="global-blacklist-table">
+                    <thead>
+                        <tr>
+                            <th>Song Link</th>
+                            <th>Song Name</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -291,20 +296,26 @@
 
       $(document).ready(function() {
         $.getJSON("{% url 'get_managers' %}", function(data) {
-          var getmanagers = data.getmanagers;
-          var tableBody = $('#get-managers-table tbody');
-      
-          $.each(getmanagers, function(index, manager) {
-            var row = '<tr>' +
-                        '<td>' + manager.email + '</td>' +
-                        '<td>' + manager.contact + '</td>' +
-                        '<td>' + manager.password + '</td>' +
-                      '</tr>';
-            tableBody.append(row);
-            
-          });
+            var getManagers = data.get_managers;
+            var tableBody = $('#get-managers-table tbody');
+    
+            $.each(getManagers, function(index, manager) {
+                var row = '<tr>' +
+                    '<td>' + manager.email + '</td>' +
+                    '<td>' + manager.contact + '</td>' +
+                    '<td>' + manager.password + '</td>' +
+                    '<td><button class="resolve-button" >Resolve</button></td>' +
+                    '</tr>';
+                tableBody.append(row);
+            });
+    
+            // Add click event listener to the "Resolve" buttons
+            $('.resolve-button').on('click', function() {
+                window.location.href = "/login/homeadmin/add_cafe";
+            });
         });
-      });
+    });
+    
 
       $(document).ready(function() {
         $.getJSON("{% url 'cafe_name' %}", function(data) {
