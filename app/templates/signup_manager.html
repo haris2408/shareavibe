@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color:white;
+        }
+        
+        .navbar {
+            background-color: orange;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+    
+        .logo {
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .back-arrow {
+            margin-right: -30px;
+        }
+        
+        .add-cafe-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 150vh;
+        }
+        
+        .add-info-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            align-items: left;
+        }
+        
+        .add-cafe-container .logo-container {
+            width: 70%;
+            height: 5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-cafe-container .logo-container .logo-image {
+            width: 15%;
+            padding-bottom: 5%;
+            border-radius: 50%;
+            background-color: #f2f2f2;
+            position: relative;
+            height: 200%;
+            overflow: hidden;
+            border-color: black;
+        }
+        
+        .add-cafe-container .logo-container .logo-image img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button {
+            position: absolute;
+            top: 30%;
+            left: 53%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button:before,
+        .add-cafe-container .add-cafe-circle .plus-button:after {
+            content: "";
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #000;
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button:before {
+            transform: rotate(90deg);
+        }
+        
+        .add-cafe-container .add-cafe-circle .plus-button:after {
+            transform: rotate(0deg);
+        }
+        
+        .add-cafe-form {
+            width: 30%;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: orange;
+            text-align: center;
+            margin-top: 10px;
+            color: white;
+        }
+        
+        .add-cafe-form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .add-cafe-form input[type="address"],
+        .add-cafe-form input[type="text"],
+        .add-cafe-form input[type="email"],
+        .add-cafe-form input[type="tel"],
+        .add-cafe-form input[type="password"],
+        .add-cafe-form input[type="float"] {
+            width: 80%;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-color: #FFD580;
+        }
+        
+        .add-cafe-form input[type="submit"] {
+            padding: 10px 20px;
+            background-color: orange;
+            color: white;
+            border-radius: 20px;
+            border-color: none;
+        }
+        
+        .add-cafe-form input[type="submit"]:hover {
+            background-color: #FFD580;
+        }
+        
+    </style>
+
+</head>
+
+<body>
+    <div class="navbar">
+        <a class="back-arrow" href="javascript:history.go(-1)">
+            <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
+        </a>
+        <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
+    </div>
+
+    <div class="add-cafe-container">
+        <form class="add-cafe-form" method="POST" action="{% url 'add_manager' %}" enctype="multipart/form-data">
+
+            {% csrf_token %}
+            <h1 style="color: white;">Signup</h1>
+            <br>
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        
+            <label for="contact">Contact:</label>
+            <input type="tel" id="contact" name="contact" required>
+        
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        
+            <input type="submit" value="Signup">
+        </form>
+        
+    </div>
+    </div>
+</body>
+
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve the session ID from the browser's storage
+        var sessionID = localStorage.getItem('session_id');
+        console.log("Session id: ", sessionID)
+        if (sessionID) {
+            // Make an API request to verify the session
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Session is verified, continue with loading the desired page
+                        console.log('Session verified');
+                    } else {
+                        // Session is not verified, redirect to the login page
+                        window.location.href = '/accounts/login/'; // Replace with the actual login URL
+                    }
+                } else {
+                    console.log('Request failed. Status:', xhr.status);
+                }
+            };
+            xhr.send(JSON.stringify({
+                'session_id': sessionID
+            }));
+        } else {
+            // Session ID is not found, redirect to the login page
+            window.location.href = '/accounts/login/'; // Replace with the actual login URL
+        }
+    });
+</script>

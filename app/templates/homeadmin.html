@@ -12,6 +12,14 @@
             padding: 0;
             font-family: Arial, sans-serif;
         }
+
+		h1 {
+            color: black;
+            text-align: center;
+           
+           
+        }
+
         
         .container {
            
@@ -20,6 +28,7 @@
             width: 80%;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+           
         }
         
         .row {
@@ -30,13 +39,13 @@
             text-align: center;
         }
         
-        .col-lg-8 {
+        .col-lg-3 {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
         }
         
-        .btn {
+        .button {
             background-color: #FE9F24;
             color: white;
             border: none;
@@ -48,9 +57,10 @@
             margin: 4px 2px;
             cursor: pointer;
             border-radius: 20px;
+            margin-left:40px;
         }
         
-        .btn:hover {
+        .button:hover {
             background-color: #F6BB30;
         }
         
@@ -81,6 +91,7 @@
             color: #fff;
             font-size: 24px;
             text-decoration: none;
+            margin-left:700px;
         }
         
         .navbar {
@@ -95,31 +106,87 @@
             text-align: center;
         }
         .left-container {
-            width: 25%;
+            width: 20%;
             float: left;
             border-right: 1px solid #ccc;
             padding-right: 0px;
+            align-items: center;
+			justify-content: center;
         }
         
         .right-container {
             
-            width: 25%;
+            width: 20%;
             float: right;
             padding-left: 0px;
             border-left: px solid #ccc;
+			align-items: center;
+			justify-content: center;
         }
-        th {
+		.middle-container {
+            
+            width: 45%;
+            float: middle;
+            padding-left: 0px;
+            border-left: px solid #ccc;
+			margin-left: 350px;
+        }
+        th
+		 {
             background-color: orange;
             color: white;
             padding: 10px;
-            border-radius: 20px;
+            border-radius: 10px;
         }
         
         td {
             border: 1px solid #ddd;
             padding: 10px;
             font-size: 18px;
-            border-radius: 20px; /* Rounded border */
+            border-radius: 10px; /* Rounded border */
+        }
+
+		
+		
+		.song-list {
+    max-height: 550px; /* Set the maximum height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.buttons-container .song-list {
+    max-height: 550px; /* Set the maximum height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+		
+        
+        
+		.button1 {
+            background-color: white;
+            color: orange;
+            border-style: solid;
+            border-color: orange;
+            padding: 10px 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 150px 70px;
+            cursor: pointer;
+            border-radius: 10px;
+            align-items: baseline;
+            margin-left:500px;
+        }
+		tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #f1ce7e;
+            transition: background-color 0.3s ease;
+        }
+        .button1:hover{
+            background-color:red;
         }
     </style>
 
@@ -130,54 +197,75 @@
 <body>
     <div class="navbar">
         <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+        <button1 id="logout-btn" type="button" class="button1 btn-danger" onclick="logout()">Logout</button1>
+           
     </div>
 
-        <div class="row">
-            <div class="col-lg-3 left-container">
-                <div class="buttons-container">
-                    <p>Welcome admin</p>
-                    <a href="{% url 'globalblacklist' %}" class="btn btn-primary mb-3">Global Blacklist</a>
-                    <br>
-                    <button id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-lg-3 left-container">
+            <div class="buttons-container">
+                <p>Welcome admin</p>
+                <a href="{% url 'globalblacklist' %}" class="button btn-primary mb-3">Global Blacklist</a>
+                <br>
+                <a href="{% url 'add_manager' %}" class="button btn-primary mb-3">Signup</a>
+                 </div>
+        </div>
 
-            <div class="col-lg-6 middle-container">
-                
+        <div class="col-lg-3 right-container">
+            <div class="buttons-container">
+				
+				
+				<button id="logout-btn" type="button" class="button btn-danger" >Cafes</button>
+					
+				
                 <div class="song-list">
-                    <table id="global-blacklist-table">
-                      <thead>
-                        <tr>
-                          <th>Song Link</th>
-                          <th>Song Name</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        
-                      </tbody>
-                    </table>
-                  </div>
-            </div>
 
-            <div class="col-lg-3 right-container">
-                <div class="buttons-container">
-                    <div class="song-list">
-                        <table id="cafe-name-table">
-                          <thead>
-                            <tr>
-                              <th>Cafe name</th>
-                              
-                            </tr>
-                          </thead>
-                          <tbody>
-                            
-                          </tbody>
-                        </table>
-                      </div>
-                    <a href="{% url 'add_cafe' %}" class="btn btn-primary">Add Cafe</a>
+                    <table id="cafe-name-table">
+                       
+                        <tbody>
+                        
+                        </tbody>
+                    </table>
                 </div>
+                <a href="{% url 'add_cafe' %}" class="button btn-primary">Add Cafe</a>
             </div>
         </div>
+		
+
+        <div class="col-lg-3 middle-container">
+			<div class="song-list">
+                <h1>GLOBAL BLACKLIST</h1>
+                <table id="global-blacklist-table">
+                    <thead>
+                        <tr>
+                            <th>Song Link</th>
+                            <th>Song Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <br>
+            <div class="manager-list">
+                <h1>Signup Requests</h1>
+                <table id="get-managers-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 
 
@@ -197,6 +285,23 @@
                         '<td>' + song.song_name + '</td>' +
                       '</tr>';
             tableBody.append(row);
+          });
+        });
+      });
+
+      $(document).ready(function() {
+        $.getJSON("{% url 'get_managers' %}", function(data) {
+          var getmanagers = data.getmanagers;
+          var tableBody = $('#get-managers-table tbody');
+      
+          $.each(getmanagers, function(index, manager) {
+            var row = '<tr>' +
+                        '<td>' + manager.email + '</td>' +
+                        '<td>' + manager.contact + '</td>' +
+                        '<td>' + manager.password + '</td>' +
+                      '</tr>';
+            tableBody.append(row);
+            
           });
         });
       });

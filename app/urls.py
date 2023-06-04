@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web,get_songss,get_global_blacklist,get_cafe_name
+from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web,get_songss,get_global_blacklist,get_cafe_name,add_manager,get_managers
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
@@ -15,6 +15,7 @@ urlpatterns = [
     path('logout_view/', logout_view, name='logout_view'),
     path('login/homeadmin/', homeadmin, name='homeadmin'),
     path('login/homeadmin/add_cafe/', add_cafe, name='add_cafe'),
+    path('login/homeadmin/add_manager/', add_manager, name='add_manager'),
     path('login/homeadmin/add_user/', add_user, name='add_user'),
     #path('playlists/', playlist, name='playlists'),
     path('login', makelogin, name='makelogin'),
@@ -45,5 +46,6 @@ urlpatterns = [
     path('get_csrf_token/', views.get_csrf_token, name='get-csrf-token'),
     path('global-blacklist/', get_global_blacklist, name='global_blacklist'),
     path('cafe-name/', get_cafe_name, name='cafe_name'),
+    path('get_managers/', get_managers, name='get_managers'),
     # Add other URL patterns as necessary
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

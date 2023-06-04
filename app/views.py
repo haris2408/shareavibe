@@ -22,6 +22,24 @@ from .serializers import cafeSerializer, addressSerializer
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
+def get_managers(request):
+    manager = CustomUser.objects.filter(is_approved=False).values('email', 'contact', 'password')
+    print(manager)
+    return JsonResponse({'get_managers': list(manager)})
+
+def add_manager(request):
+    if request.method == 'POST':
+        # Get the data from the request
+        email = request.POST.get('email')
+        contact = request.POST.get('contact')
+        password = request.POST.get('password')
+        user = CustomUser.objects.create(email=email, contact=contact, password=password)
+
+        # Redirect to the homepage
+        return redirect('homeadmin')
+
+    return render(request, 'signup_manager.html')
+
 def get_global_blacklist(request):
     global_blacklist = GlobalBlacklist.objects.all().values('song_link', 'song_name')
     return JsonResponse({'global_blacklist': list(global_blacklist)})
