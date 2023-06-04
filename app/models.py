@@ -19,6 +19,9 @@ class Playlist(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
     playlist_name = models.CharField(max_length=100)
 
+    def __str__(self) -> str:
+        return self.cafe.name +": "+self.playlist_name 
+
 class CafeBlacklist(models.Model):
     song_name = models.CharField(max_length=255,null=True)
     song_link = models.CharField(max_length=255)
@@ -46,6 +49,8 @@ class Song(models.Model):
     song_name = models.CharField(max_length=255,null=True)
     song_link = models.CharField(max_length=255)
     is_blacklisted = models.BooleanField(default=False)
+    def __str__(self) -> str:
+        return self.playlist.playlist_name+": "+self.song_name
 
 class Queue(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE)
