@@ -545,8 +545,8 @@
             },
             success: function(response) {
                 alert("Link has been removed successfully");
-                updateSongs();
                 updateQueueDisplay();
+                updateSongs();
             },
             error: function(xhr, status, error) {
                 alert("Error removing song");
@@ -654,7 +654,7 @@
       
             var removeButtonColumn = document.createElement("td");
             var removeButton = document.createElement("img");
-            removeButton.src = "/images/cross1.png"; // Replace with the path or URL of your remove icon image
+            removeButton.src = "/images/cross1.png"; 
             removeButton.alt = "Remove";
             removeButton.addEventListener("click", (function(videoIdToRemove) {
               return function() {
@@ -763,8 +763,8 @@
             success: function(response) {
                 if (response.success) {
                     alert("Link has been added to the blacklist");
-                    updateSongs();
                     updateQueueDisplay();
+                    updateSongs();
                 } else {
                     alert("Error: " + response.error);
                 }
