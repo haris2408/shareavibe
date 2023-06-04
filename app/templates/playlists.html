@@ -25,6 +25,7 @@
         h2 {
             text-align: center;
             margin: 30px 0;
+            color: white;
         }
         
         form {
@@ -58,7 +59,7 @@
         }
         
         button:hover {
-            background-color: lightsalmon;
+            background-color: #F6BB30;
         }
         
         ul {
@@ -95,16 +96,21 @@
             height: 50px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 0 10px;
         }
-        
+    
         .logo {
             color: #fff;
-            font-size: 24px;
-            text-decoration: none;
-            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
         }
-        
+        .back-arrow {
+            margin-right: -30px;
+        }
+
         .container {
             background-color: white;
             padding: 10px;
@@ -117,9 +123,10 @@
         .playlist-container {
             background-color: orange;
             padding: 10px;
-            margin: 10px;
+            margin-left: 350px;
             border-radius: 5px;
             align-items: center;
+            width: 50%;
         }
         
         .playlist-name {
@@ -130,20 +137,26 @@
         Playlist:hover {
             background-color: lightsalmon;
         }
-        .cross{
+        
+        .cross {
             background-image: url("/images/cross1.png");
-            background-size:cover;
-            display: inline-block;
+            background-size: cover;
+            display: flex;
             width: 25px;
             height: 25px;
-            cursor:pointer;
+            margin-left: 650px;
+            cursor: pointer;
         }
+        
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+        <a class="back-arrow" href="javascript:history.go(-1)">
+            <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
+        </a>
+        <a class="logo"><img src="/images/nav_logo.png" alt="Logo"></a>
     </div>
     <div class="container">
         <h1>My Playlists</h1>
@@ -162,10 +175,10 @@
             {% for playlist in playlists %}
             <div class="playlist-name">
                 <li><a href="{% url 'add_song' playlist_id=playlist.id %}">{{ playlist.playlist_name }}</a>
-                    <span class ="cross" onclick="removePlaylist('{{ playlist.id }}')"></span>
+                    <span class="cross" onclick="removePlaylist('{{ playlist.id }}')"></span>
                 </li>
-                
-		
+
+
             </div>
             {% endfor %}
         </ul>
@@ -177,49 +190,51 @@
 
 </html>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         // Retrieve the session ID from the browser's storage
         var sessionID = localStorage.getItem('session_id');
-        console.log("Session id: ",sessionID)
+        console.log("Session id: ", sessionID)
         if (sessionID) {
             // Make an API request to verify the session
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/verify_session_web');  // Replace with the actual API URL
+            xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
             xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function () {
+            xhr.onload = function() {
                 if (xhr.status === 200) {
-                    
+
                     var response = JSON.parse(xhr.responseText);
                     if (response.status === 'success') {
                         // Session is verified, continue with loading the desired page
                         console.log('Session verified');
                     } else {
                         // Session is not verified, redirect to the login page
-                        window.location.href = '/accounts/login/';  // Replace with the actual login URL
+                        window.location.href = '/accounts/login/'; // Replace with the actual login URL
                     }
                 } else {
                     console.log('Request failed. Status:', xhr.status);
                 }
             };
-            xhr.send(JSON.stringify({ 'session_id': sessionID }));
+            xhr.send(JSON.stringify({
+                'session_id': sessionID
+            }));
         } else {
             // Session ID is not found, redirect to the login page
-            window.location.href = '/accounts/login/';  // Replace with the actual login URL
+            window.location.href = '/accounts/login/'; // Replace with the actual login URL
         }
     });
 
     function removePlaylist(playlist_id) {
         // Send an AJAX request to the API view to remove the song from the blacklist
         fetch(`/api/playlists/${playlist_id}/remove`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}",
-            },
-        })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            })
             .then(response => {
                 if (response.ok) {
-                    
+
                     window.location.reload();
                 } else {
                     // Handle error if removal fails

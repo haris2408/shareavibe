@@ -7,13 +7,14 @@
 
     <style>
         body {
+            background-image: url("/images/t1.png");
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
         }
         
         .container {
-            background-color: #F9F9F9;
+           
             padding: 30px;
             margin: 30px auto;
             width: 80%;
@@ -93,6 +94,33 @@
         h4 {
             text-align: center;
         }
+        .left-container {
+            width: 25%;
+            float: left;
+            border-right: 1px solid #ccc;
+            padding-right: 0px;
+        }
+        
+        .right-container {
+            
+            width: 25%;
+            float: right;
+            padding-left: 0px;
+            border-left: px solid #ccc;
+        }
+        th {
+            background-color: orange;
+            color: white;
+            padding: 10px;
+            border-radius: 20px;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 20px; /* Rounded border */
+        }
     </style>
 
     </style>
@@ -100,79 +128,147 @@
 
 
 <body>
-
-    <div class="navbar ">
-
+    <div class="navbar">
         <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
-
     </div>
 
-    <div class="container">
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-3 left-container">
                 <div class="buttons-container">
                     <p>Welcome admin</p>
-                    <a href="{% url 'add_cafe' %}" class="btn btn-primary">Add Cafe</a>
-                    <br>
-                    <a href="{% url 'add_user' %}" class="btn btn-primary">Add User</a>
-                    <br>
                     <a href="{% url 'globalblacklist' %}" class="btn btn-primary mb-3">Global Blacklist</a>
+                    <br>
+                    <button id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button>
                 </div>
             </div>
 
-            <div class="col-lg-8">
-                <div class="cafes-container">
-                    <!-- Cafe 1 -->
-                    <div class="cafe-item">
-                        <div class="cafe-content">
-                            <img src="cafe1-logo.jpg" alt="Cafe 1" class="cafe-logo">
-                            <h4>Cafe 1</h4>
-                        </div>
-                    </div>
+            <div class="col-lg-6 middle-container">
+                
+                <div class="song-list">
+                    <table id="global-blacklist-table">
+                      <thead>
+                        <tr>
+                          <th>Song Link</th>
+                          <th>Song Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                      </tbody>
+                    </table>
+                  </div>
+            </div>
 
-                    <!-- Cafe 2 -->
-                    <div class="cafe-item">
-                        <div class="cafe-content">
-                            <img src="cafe2-logo.jpg" alt="Cafe 2" class="cafe-logo">
-                            <h4>Cafe 2</h4>
-                        </div>
-                    </div>
-
-                    <!-- Cafe 3 -->
-                    <div class="cafe-item">
-                        <div class="cafe-content">
-                            <img src="cafe3-logo.jpg" alt="Cafe 3" class="cafe-logo">
-                            <h4>Cafe 3</h4>
-                        </div>
-                    </div>
+            <div class="col-lg-3 right-container">
+                <div class="buttons-container">
+                    <div class="song-list">
+                        <table id="cafe-name-table">
+                          <thead>
+                            <tr>
+                              <th>Cafe name</th>
+                              
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                    <a href="{% url 'add_cafe' %}" class="btn btn-primary">Add Cafe</a>
                 </div>
             </div>
         </div>
-    </div>
-
 </body>
+
 
 </html>
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  function addToGBlacklist() {
-    var youtubeLink = document.getElementById("blacklist-link").value;
-    $.ajax({
-        type: "POST",
-        url: "/api/add-to-Gblacklist/",
-        data: {
-            youtube_link: youtubeLink,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        success: function(response) {
-            if (response.success) {
-                alert("Link has been added to the Globalblacklist");
-            } else {
-                alert("Error: " + response.error);
+
+    $(document).ready(function() {
+        $.getJSON("{% url 'global_blacklist' %}", function(data) {
+          var globalBlacklist = data.global_blacklist;
+          var tableBody = $('#global-blacklist-table tbody');
+      
+          $.each(globalBlacklist, function(index, song) {
+            var row = '<tr>' +
+                        '<td>' + song.song_link + '</td>' +
+                        '<td>' + song.song_name + '</td>' +
+                      '</tr>';
+            tableBody.append(row);
+          });
+        });
+      });
+
+      $(document).ready(function() {
+        $.getJSON("{% url 'cafe_name' %}", function(data) {
+          var cafename = data.cafe_name;
+          var tableBody = $('#cafe-name-table tbody');
+      
+          $.each(cafename, function(index, song) {
+            var row = '<tr>' +
+                        '<td>' + song.name + '</td>' +
+                      '</tr>';
+            tableBody.append(row);
+          });
+        });
+      });
+      
+    function addToGBlacklist() {
+        var youtubeLink = document.getElementById("blacklist-link").value;
+        $.ajax({
+            type: "POST",
+            url: "/api/add-to-Gblacklist/",
+            data: {
+                youtube_link: youtubeLink,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert("Link has been added to the Globalblacklist");
+                } else {
+                    alert("Error: " + response.error);
+                }
             }
+        });
+    }
+
+    function logout() {
+        window.location.href = "{% url 'logout_view' %}";
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve the session ID from the browser's storage
+        var sessionID = localStorage.getItem('session_id');
+        console.log("Session id: ", sessionID)
+        if (sessionID) {
+            // Make an API request to verify the session
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Session is verified, continue with loading the desired page
+                        console.log('Session verified');
+                    } else {
+                        // Session is not verified, redirect to the login page
+                        window.location.href = '/accounts/login/'; // Replace with the actual login URL
+                    }
+                } else {
+                    console.log('Request failed. Status:', xhr.status);
+                }
+            };
+            xhr.send(JSON.stringify({
+                'session_id': sessionID
+            }));
+        } else {
+            // Session ID is not found, redirect to the login page
+            window.location.href = '/accounts/login/'; // Replace with the actual login URL
         }
     });
-  }
 </script>
 {% endblock %}

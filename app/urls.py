@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web
+from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web,get_songss,get_global_blacklist,get_cafe_name
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
@@ -26,7 +26,7 @@ urlpatterns = [
     path('api/play-song/', play_song, name='play_song'),
     path('api/update-cafe-status/', update_cafe_status, name='update_cafe_status'),
     path('api/update-queue/', update_queue, name='update_queue'),
-    path('get-songs/', get_songs, name='get_songs'),
+    path('api/get-songss/', get_songss, name='get_songss'),
     path('update-queueisplayed/', update_queueisplayed, name='update_queueisplayed'),
     path('api/add-to-blacklist/', add_to_blacklist, name='add_to_blacklist'),
     path('api/add-to-blacklist2/', add_to_blacklist2, name='add_to_blacklist2'),
@@ -43,6 +43,7 @@ urlpatterns = [
     path('api/verify_session_web', views.verify_session_web, name='verify_session_web'),
     path('api/add_to_queue_mobile', views.add_to_queue_mobile, name = 'add_to_queue_mobile'),
     path('get_csrf_token/', views.get_csrf_token, name='get-csrf-token'),
-
+    path('global-blacklist/', get_global_blacklist, name='global_blacklist'),
+    path('cafe-name/', get_cafe_name, name='cafe_name'),
     # Add other URL patterns as necessary
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -7,6 +7,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            background-color:white;
         }
         
         .navbar {
@@ -14,13 +15,19 @@
             height: 50px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 0 10px;
         }
-        
+    
         .logo {
             color: #fff;
-            font-size: 24px;
-            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        .back-arrow {
+            margin-right: -30px;
         }
         
         .add-cafe-container {
@@ -94,38 +101,36 @@
             transform: rotate(0deg);
         }
         
-        .add-cafe-container .add-cafe-form {
-            margin-top: 50px;
-            width: 50%;
+        .add-cafe-form {
+            width: 30%;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: orange;
+            text-align: center;
+            margin-top: 400px;
+            color: white;
         }
         
-        .add-cafe-container .add-cafe-form label {
+        .add-cafe-form label {
             display: block;
             margin-bottom: 10px;
         }
         
-        .add-cafe-container .add-cafe-form input[type="text"],
-        .add-cafe-container .add-cafe-form input[type="tel"],
-        .add-cafe-container .add-cafe-form input[type="email"],
-        .add-cafe-container .add-cafe-form input[type="password"],
-        .add-cafe-container .add-cafe-form input[type="float"] {
-            width: 50%;
-            padding: 5px;
-            border-radius: 20px;
-            margin: 5px;
-            border-color: #FFD580;
-        }
-        
-        .add-cafe-container .add-cafe-form input[type="address"] {
+        .add-cafe-form input[type="address"],
+        .add-cafe-form input[type="text"],
+        .add-cafe-form input[type="email"],
+        .add-cafe-form input[type="tel"],
+        .add-cafe-form input[type="password"],
+        .add-cafe-form input[type="float"] {
             width: 80%;
-            padding: 20px;
-            border-radius: 20px;
-            margin: 5px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
             border-color: #FFD580;
         }
         
-        .add-cafe-container .add-cafe-form input[type="submit"] {
-            padding: 10px 10px;
+        .add-cafe-form input[type="submit"] {
+            padding: 10px 20px;
             background-color: orange;
             color: white;
             border-radius: 20px;
@@ -135,67 +140,107 @@
         .add-cafe-form input[type="submit"]:hover {
             background-color: #FFD580;
         }
+        
     </style>
 
 </head>
 
 <body>
     <div class="navbar">
-        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+        <a class="back-arrow" href="javascript:history.go(-1)">
+            <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
+        </a>
+        <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
     </div>
 
     <div class="add-cafe-container">
-
         <form class="add-cafe-form" method="POST" action="{% url 'add_cafe' %}" enctype="multipart/form-data">
 
             {% csrf_token %}
-            <br><br>
+            <h1 style="color: white;">Add Cafe</h1>
+            <br>
+            
             <label for="address">Address:</label>
             <input type="address" id="address" name="address" required>
-
+        
             <label for="cafe_name">Cafe Name:</label>
             <input type="text" id="cafe_name" name="cafe_name" required>
-
+        
             <label for="area">Area:</label>
             <input type="text" id="area" name="area" required>
-
+        
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
-
+        
             <label for="contact">Contact:</label>
             <input type="tel" id="contact" name="contact" required>
-
+        
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-
+        
             <label for="tllat">Top Left lat:</label>
             <input type="float" id="tllat" name="tllat" required>
-
+        
             <label for="tllong">Top Left long:</label>
             <input type="float" id="tllong" name="tllong" required>
-
+        
             <label for="trlat">Top Right lat:</label>
             <input type="float" id="trlat" name="trlat" required>
-
+        
             <label for="trlong">Top Right long:</label>
             <input type="float" id="trlong" name="trlong" required>
-
+        
             <label for="bllat">Bottom Left lat:</label>
             <input type="float" id="bllat" name="bllat" required>
-
+        
             <label for="bllong">Bottom Left long:</label>
             <input type="float" id="bllong" name="bllong" required>
-
+        
             <label for="brlat">Bottom Right lat:</label>
             <input type="float" id="brlat" name="brlat" required>
-
+        
             <label for="brlong">Bottom Right long:</label>
             <input type="float" id="brlong" name="brlong" required>
-
+        
             <input type="submit" value="Add Cafe">
         </form>
+        
     </div>
     </div>
 </body>
 
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve the session ID from the browser's storage
+        var sessionID = localStorage.getItem('session_id');
+        console.log("Session id: ", sessionID)
+        if (sessionID) {
+            // Make an API request to verify the session
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Session is verified, continue with loading the desired page
+                        console.log('Session verified');
+                    } else {
+                        // Session is not verified, redirect to the login page
+                        window.location.href = '/accounts/login/'; // Replace with the actual login URL
+                    }
+                } else {
+                    console.log('Request failed. Status:', xhr.status);
+                }
+            };
+            xhr.send(JSON.stringify({
+                'session_id': sessionID
+            }));
+        } else {
+            // Session ID is not found, redirect to the login page
+            window.location.href = '/accounts/login/'; // Replace with the actual login URL
+        }
+    });
+</script>

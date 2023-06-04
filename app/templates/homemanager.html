@@ -7,7 +7,7 @@
     <title>Cafe</title>
     <style>
         body {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-image: url("/images/t1.png");
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
@@ -29,13 +29,13 @@
         }
         
         #container {
-            background-color: #F9F9F9;
             padding: 30px;
-            margin: 30px auto;
+            margin-bottom:0px;
+            margin-left: 20px;
             width: 80%;
-            height:10%;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: 10%;
             border-radius: 10px;
+            
         }
         
         #container1 {
@@ -63,6 +63,21 @@
             border-radius: 20px;
         }
         
+        button8 {
+            background-color: #FE9F24;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            text-align: left;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 8px 60px;
+            margin-left: 20px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        
         button2,
         button3 {
             background-color: #FE9F24;
@@ -73,7 +88,23 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            margin: 4px 60px;
+            margin: 8px 60px;
+            margin-left: 50px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        
+        button4 {
+            background-color: #FE9F24;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            text-align: left;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 8px 60px;
+            margin-left: 50px;
             cursor: pointer;
             border-radius: 20px;
         }
@@ -88,7 +119,7 @@
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
-            margin: 150px 80px;
+            margin: 150px 70px;
             cursor: pointer;
             border-radius: 10px;
             align-items: baseline;
@@ -99,7 +130,13 @@
             border: 0;
         }
         
-        button:hover {
+        button:hover,
+        button8:hover,
+        button2:hover,
+        button3:hover,
+        button1:hover,
+        button4:hover,
+        {
             background-color: #F6BB30;
         }
         
@@ -131,7 +168,7 @@
         }
         
         li {
-            background-color: #ddd;
+           
             padding: 10px;
             margin-bottom: 2px;
             border-radius: 4px;
@@ -143,7 +180,7 @@
         }
         
         #queue li {
-            background-color: #eee;
+           
             padding: 10px;
             margin-bottom: 2px;
             border-radius: 4px;
@@ -162,451 +199,598 @@
         }
         
         .right-container {
+            
             width: 70%;
             float: right;
             padding-right: 20px;
+        }
+        
+        #queue {
+           
+            padding: 10px;
+            color: white;
+        }
+        
+        #player {
+            padding: 10px;
+            color: white;
+        }
+
+
+		.queue-table {
+		width: 100%;
+		border-collapse: collapse;
+		}
+
+		.queue-table th,
+		.queue-table td {
+		padding: 10px;
+		text-align: left;
+		}
+
+		.queue-table th {
+		background-color: #FE9F24;
+		color: white;
+		}
+
+		.queue-table td {
+		background-color: white;
+		text-decoration-color: #333;
+		}
+
+		.queue-table button {
+		background-color: #FE9F24;
+		color: white;
+		border: none;
+		padding: 5px 10px;
+		cursor: pointer;
+		border-radius: 5px;
+		}
+
+		.queue-table button:hover {
+		background-color: #F6BB30;
+		}
+
+		/* Add this style to your existing CSS */
+
+		.queue-table td.song-name {
+		color: black;
+		}
+
+		.queue-row:hover {
+		background-color: #F6BB30;
+		}
+		.queue-table tr:hover {
+		background-color: #F6BB30;
+		}
+
+        .queue-scroll {
+            max-height: 500px;
+            overflow-y: auto; 
+          }
+        
+          #active-btn {
+            background-color: {% if cafe.is_active %}#28a745{% else %}#dc3545{% endif %};
+        }
+        
+        #active-btn:hover {
+            background-color: {% if cafe.is_active %}#1e7e34{% else %}#c82333{% endif %};
         }
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+        <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
     </div>
     <div class="container">
-
         <div class="col-lg-3 left-container">
             <div id="container">
-
-
                 <h1>{{cafe.name}}</h1>
                 <br>
-                <button2 onclick="window.location.href='{% url 'playlists' %}'" class="btn btn-primary mb-3">Playlist</button2>
+                <button2 onclick="window.open('{% url 'playlists' %}', '_blank')" class="btn btn-primary mb-3">Playlist</button2>
                 <br>
-                <button3 onclick="window.location.href='{% url 'cafeblacklist' %}'" class="btn btn-primary mb-3">Blacklist</button3>
+                <button3 onclick="window.open('{% url 'cafeblacklist' %}', '_blank')" class="btn btn-primary mb-3">Blacklist</button3>
+                <br>
+                
                 <br>
                 <button1 id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button1>
-            </div>
-
-
-        </div>
-        <div class="col-lg-12 right-container">
-
-
-          <div id="container" style="display: flex;">
-            <form class="form-inline" style="display: flex;">
-              
-              <input type="text" id="youtube-link" name="youtube_link" class="form-control" placeholder="Paste YouTube link here">
-              <button type="button" class="btn btn-success" onclick="playYouTube()">Play</button>
-            </form>
-          </div>
-                <div id="player"></div>
-                <div id="queue"></div>
-
-                <button id="active-btn" type="button" class="btn btn-primary mb-3" onclick="toggleCafeStatus()">
-                                {% if cafe.is_active %}Active{% else %}Inactive{% endif %}
-                            </button> {% if cafe.is_active %}
                 
-                <!--<br>
+            </div>
+            
+        </div>
+        
+        <div class="col-lg-12 right-container">
+            <div id="container" style="display: flex;">
+                <form class="form-inline" style="display: flex;">
+
+                    <input type="text" id="youtube-link" name="youtube_link" class="form-control" placeholder="Paste YouTube link here">
+                    <button8 type="button" class="btn btn-success" onclick="playYouTube()">Play</button8>
+                    <button8 id="active-btn" type="button" class="btn btn-primary mb-3"
+                    onclick="toggleCafeStatus()">{% if cafe.is_active %}Active{% else %}
+                    Inactive{% endif %}</button8>
+                </form>
+                <br>
+                
+            </div>
+            <div id="player"></div>
+            <div class="queue-scroll">
+				<table class="queue-table">
+				  <thead>
+					<tr>
+					  <th>Token ID</th>
+					  <th>Song Name</th>
+					  <th>Remove</th>
+					  <th>Blacklist</th>
+					</tr>
+				  </thead>
+				  <tbody id="queue-body">
+					<!-- Table rows will be dynamically added here -->
+				  </tbody>
+				</table>
+			  </div>
+            
+            
+            {% if cafe.is_active %}
+
+            <!--<br>
                 <form id="blacklist-form" class="form-inline">
                     <input type="text" id="blacklist-link" class="form-control" placeholder="Add link to blacklist">
                     <button type="button" class="btn btn-danger" onclick="addToBlacklist()">Add to Blacklist</button>
                 </form>-->
-                <p>Is Active: {{ cafe.is_active }}</p>
-                <p>Current Token: <span id="current-token">{{ cafe.current_token }}</span></p>
-                <p>Next Token: {{ cafe.next_token }}</p>
-                </ul>
-                {% else %}
-                <p>Cafe is currently inactive.</p>
-                {% endif %}
-            </div>
+            <p>Is Active: {{ cafe.is_active }}</p>
+            <p>Current Token: <span id="current-token">{{ cafe.current_token }}</span></p>
+            <p>Next Token: {{ cafe.next_token }}</p>
+            </ul>
+            {% else %}
+            <p>Cafe is currently inactive.</p>
+            {% endif %}
         </div>
     </div>
-    </div>
-
-    </div>
-    </div>
 </body>
+</html>
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-  var current_tok;
-  var player;
-  var queue = [];
-  var queue_token_no = [];
-  var myvideoid;
-  function Refresh() {   
-    {% for song in songs %}
-    var text = "{{ song.0 }}";
-    var videoId = getYouTubeVideoId(text);
-    queue.push(videoId);
-    {% endfor %}
-    {% for q in queue %}
-        var text = "{{ q.token_no }}";
-        queue_token_no.push(text);
-    {% endfor %}
-    console.log(queue_token_no);
-    //var firstVideoId = queue[0];
-    //setVideoPlayed(firstVideoId);
-    playNextVideo();
-  }
+    var current_tok;
+    var player;
+    var queue = [];
+    var queue_token_no = [];
+    var myvideoid;
 
-  async function playYouTube() {
-    var youtubeLink = document.getElementById("youtube-link").value;
-    
-    try {
-      var isSong = await isSongVideo(youtubeLink);
-      console.log("is song:",isSong);
-      if (isSong) {
-        const durationInSeconds = await getSongDuration(youtubeLink);
-        
-        if (durationInSeconds > 360) {
-          console.log('Song duration is greater than 6 minutes');
-        } else {
-          console.log('Song duration is less than or equal to 6 minutes');
-          fetch('/api/play-youtube/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'youtube_link=' + encodeURIComponent(youtubeLink)
-          }).then(function(response) {
-            if (response.ok) {
-              //console.log('YouTube video added to queue');
+    function Refresh() {   
+        {% for song in songs %}
+        var text = "{{ song.0 }}";
+        var videoId = getYouTubeVideoId(text);
+        queue.push(videoId);
+        {% endfor %}
+        {% for q in queue %}
+            var text = "{{ q.token_no }}";
+            queue_token_no.push(text);
+        {% endfor %}
+        console.log(queue_token_no);
+        //var firstVideoId = queue[0];
+        //setVideoPlayed(firstVideoId);
+        playNextVideo();
+      }
+
+    async function playYouTube() {
+        var youtubeLink = document.getElementById("youtube-link").value;
+
+        try {
+            var isSong = await isSongVideo(youtubeLink);
+            console.log("is song:", isSong);
+            if (isSong) {
+                const durationInSeconds = await getSongDuration(youtubeLink);
+
+                if (durationInSeconds > 360) {
+                    alert('Song duration is greater than 6 minutes');
+                } else {
+                    
+                    fetch('/api/play-youtube/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'youtube_link=' + encodeURIComponent(youtubeLink)
+                    }).then(function(response) {
+                        if (response.ok) {
+                            //console.log('YouTube video added to queue');
+                        } else {
+                            console.log('Error adding YouTube video to queue');
+                        }
+                    }).catch(function(error) {
+                        alert('Network error:', error);
+                    });
+                }
             } else {
-              console.log('Error adding YouTube video to queue');
+                alert('The provided link is not a song video');
             }
-          }).catch(function(error) {
-            console.log('Network error:', error);
-          });
+        } catch (error) {
+            alert('Error checking if the video is a song:', error);
         }
-      } else {
-        console.log('The provided link is not a song video');
-      }
-    } catch (error) {
-      console.log('Error checking if the video is a song:', error);
     }
-  }
 
-  async function isSongVideo(youtubeLink) {
-    try {
-      const videoId = getYouTubeVideoId(youtubeLink);
-      const apiKey = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o';
-      const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
-  
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-  
-      if (data.items.length > 0) {
-        const videoCategory = data.items[0].snippet.categoryId;
-        // Assuming the category ID for song videos is '10' (Music)
-        if (videoCategory === '10') {
-          return true; // It's a song video
+    async function isSongVideo(youtubeLink) {
+        try {
+            const videoId = getYouTubeVideoId(youtubeLink);
+            const apiKey = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI';
+            const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
+
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.items.length > 0) {
+                const videoCategory = data.items[0].snippet.categoryId;
+                // Assuming the category ID for song videos is '10' (Music)
+                if (videoCategory === '10') {
+                    return true; // It's a song video
+                }
+            }
+
+            return false; // Not a song video
+        } catch (error) {
+            alert('Error checking song video:', error);
+            return false; // Error occurred, assume it's not a song video
         }
-      }
-  
-      return false; // Not a song video
-    } catch (error) {
-      console.log('Error checking song video:', error);
-      return false; // Error occurred, assume it's not a song video
     }
-  }      
-  
-  async function getSongDuration(youtubeLink) {
-    try {
-      const videoId = getYouTubeVideoId(youtubeLink);
-      const apiKey = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o';
-      const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=contentDetails`;
-  
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-  
-      if (data.items.length > 0) {
-        const duration = data.items[0].contentDetails.duration;
-        const durationInSeconds = parseDurationToSeconds(duration);
-        return durationInSeconds;
-      }
-  
-      return 0; // Invalid or unavailable duration
-    } catch (error) {
-      console.log('Error fetching song duration:', error);
-      return 0; // Error occurred, assume invalid duration
-    }
-  }
-  
-  function parseDurationToSeconds(duration) {
-    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-  
-    const hours = (parseInt(match[1]) || 0);
-    const minutes = (parseInt(match[2]) || 0);
-    const seconds = (parseInt(match[3]) || 0);
-  
-    return hours * 3600 + minutes * 60 + seconds;
-  }
-  
 
-  function playNextVideo() {
-    if (queue.length > 0) {
-      var videoId = queue.shift();
-      current_tok=queue_token_no[0];
-      var currentTokenElement = document.getElementById('current-token');
-      // Update the current token value
-      currentTokenElement.textContent = current_tok;
-      
-      console.log("current_tok:",current_tok);
-      queue_token_no.shift();
-      myvideoid=videoId;
-      console.log("myvideoid",myvideoid);
-      //updateSongs();
-      player = new YT.Player('player', {
-        height: '260',
-        width: '440',
-        videoId: videoId,
-        events: {
-          'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
+    async function getSongDuration(youtubeLink) {
+        try {
+            const videoId = getYouTubeVideoId(youtubeLink);
+            const apiKey = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI';
+            const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=contentDetails`;
+
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.items.length > 0) {
+                const duration = data.items[0].contentDetails.duration;
+                const durationInSeconds = parseDurationToSeconds(duration);
+                return durationInSeconds;
+            }
+
+            return 0; // Invalid or unavailable duration
+        } catch (error) {
+            alert('Error fetching song duration:', error);
+            return 0; // Error occurred, assume invalid duration
         }
-      });
-      updateQueueDisplay();
     }
-  }
 
-  function getYouTubeVideoId(link) {
-    var videoId = link.split('v=')[1];
-    var ampersandPosition = videoId.indexOf('&');
-    if (ampersandPosition !== -1) {
-      videoId = videoId.substring(0, ampersandPosition);
-    }
-    return videoId;
-  }
+    function parseDurationToSeconds(duration) {
+        const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
 
-  function setVideoPlayed(videoId) {
-    $.ajax({
-      type: 'POST',
-      url: '/update-queueisplayed/',
-      data: {
-        'song_link': videoId,
-        'csrfmiddlewaretoken': '{{ csrf_token }}',
-      },
-      success: function(response) {
-        console.log(response);
-      },
-      error: function(xhr, status, error) {
-        console.error(xhr.responseText);
-      }
-    });
-  }
+        const hours = (parseInt(match[1]) || 0);
+        const minutes = (parseInt(match[2]) || 0);
+        const seconds = (parseInt(match[3]) || 0);
 
-  function onPlayerReady(event) {
-    event.target.playVideo();
-  }
-  
-  function isVideoPlaying() {
-    if (player) {
-      return player.getPlayerState() === 1;
-    } else {
-      return false;
+        return hours * 3600 + minutes * 60 + seconds;
     }
-  }
-  setInterval(function() {
-    if (player && player.getPlayerState() === 2) {
-      // Video is paused, do nothing
-    } else if (!isVideoPlaying()) {
-      location.reload();
-    }
-  }, 15000);
-  function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.ENDED) {
-      event.target.destroy();
-      setVideoPlayed(myvideoid);
-      updateSongs();
-      //playNextVideo();
-    }
-  }
 
-  function updateSongs() {
-    fetch('/get-songs/')
-        .then(response => response.json())
-        .then(data => {
-            var nsongs = data.newsongs;
-            // clear the queue
-            queue = [];
-            queue_token_no = [];
-            // update the songs and queue variables
-            nsongs.forEach(song => {
-                var text = song[0];
-                var videoId = getYouTubeVideoId(text);
-                queue.push(videoId);
-                queue_token_no.push(song[3]);
+
+    function playNextVideo() {
+        if (queue.length > 0) {
+            var videoId = queue.shift();
+            current_tok = queue_token_no[0];
+            var currentTokenElement = document.getElementById('current-token');
+            // Update the current token value
+            currentTokenElement.textContent = current_tok;
+
+            console.log("current_tok:", current_tok);
+            queue_token_no.shift();
+            myvideoid = videoId;
+            setVideoPlayed(myvideoid);
+            console.log("myvideoid", myvideoid);
+            //updateSongs();
+            player = new YT.Player('player', {
+                height: '260',
+                width: '865',
+                videoId: videoId,
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
             });
-            console.log('Songs updated:', queue);
-        })
-        .catch(error => {
-            console.log('Error updating songs:', error);
+            updateQueueDisplay();
+        }
+    }
+
+    function getYouTubeVideoId(link) {
+        var videoId = link.split('v=')[1];
+        var ampersandPosition = videoId.indexOf('&');
+        if (ampersandPosition !== -1) {
+            videoId = videoId.substring(0, ampersandPosition);
+        }
+        return videoId;
+    }
+
+    function setVideoPlayed(videoId) {
+        $.ajax({
+            type: 'POST',
+            url: '/update-queueisplayed/',
+            data: {
+                'song_link': videoId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
         });
-  }
-
-
-  async function getVideoName(videoId) {
-    try {
-      const apiUrl = "https://www.googleapis.com/youtube/v3/videos";
-      const params = {
-        id: videoId,
-        key: "AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o",
-        part: "snippet"
-      };
-  
-      const response = await fetch(apiUrl + "?" + new URLSearchParams(params));
-      const data = await response.json();
-  
-      if (data.items.length > 0) {
-        const videoName = data.items[0].snippet.title;
-        return videoName;
-      } else {
-        return "Unknown Video";
-      }
-    } catch (error) {
-      console.log("Error fetching video title:", error);
-      return "Unknown Video";
     }
-  }
-  
-  async function updateQueueDisplay() {
-    var queueElement = document.getElementById("queue");
-    queueElement.innerHTML = ""; // Clear the existing queue
-  
-    for (var i = 0; i < queue.length; i++) {
-      var videoId = queue[i];
-      var tokenNo = queue_token_no[i];
-  
-      try {
-        var videoName = await getVideoName(videoId);
-        var videoLink = "https://www.youtube.com/watch?v=" + videoId;
-  
-        var listItem = document.createElement("li");
-        var link = document.createElement("a");
-        link.href = videoLink;
-        link.textContent = tokenNo + " - " + videoName;
-  
-        var blacklistButton = document.createElement("button");
-        blacklistButton.textContent = "Blacklist";
-        blacklistButton.addEventListener("click", (function(videoLink) {
-          return function() {
-            addToBlacklist2(videoLink);
-          };
-        })(videoLink));
-  
-        var removeButton = document.createElement("button");
-        removeButton.textContent = "Remove";
-        removeButton.addEventListener("click", (function(videoIdToRemove) {
-          return function() {
-            setVideoPlayed(videoIdToRemove);
-          };
-        })(getYouTubeVideoId(videoLink)));
-  
-        listItem.appendChild(link);
-        listItem.appendChild(blacklistButton);
-        listItem.appendChild(removeButton);
-        queueElement.appendChild(listItem);
-      } catch (error) {
-        console.log("Error fetching video name:", error);
-        // Handle error case if necessary
-      }
+    function setVideoPlayed2(videoId) {
+        $.ajax({
+            type: 'POST',
+            url: '/update-queueisplayed/',
+            data: {
+                'song_link': videoId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function(response) {
+                alert("Link has been removed successfully");
+                updateSongs();
+                updateQueueDisplay();
+            },
+            error: function(xhr, status, error) {
+                alert("Error removing song");
+            }
+        });
     }
-  }
-  
-  
 
-  function toggleCafeStatus() {
-    var activeBtn = document.getElementById("active-btn");
-    var isActive = activeBtn.textContent === "Active";
-    fetch("{% url 'update_cafe_status' %}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": getCookie("csrftoken")
-      },
-      body: JSON.stringify({ "is_active": !isActive })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          var cafe = data.cafe;
-          activeBtn.textContent = cafe.is_active ? "Active" : "Inactive";
-          if (cafe.is_active) {
-            console.log("Cafe is currently active");
-          } else {
-            console.log("Cafe is not currently active");
-          }
+    function onPlayerReady(event) {
+        event.target.playVideo();
+    }
+
+    function isVideoPlaying() {
+        if (player) {
+            return player.getPlayerState() === 1;
         } else {
-          console.error(data.error);
+            return false;
         }
-      })
-      .catch(error => console.error(error));
-  }
+    }
+    setInterval(function() {
+        if (player && player.getPlayerState() === 2) {
+            // Video is paused, do nothing
+        } else if (!isVideoPlaying()) {
+            
+            location.reload();
+        }
+    }, 3000);
 
-  function logout() {
-    window.location.href = "{% url 'logout_view' %}";
-  }
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.ENDED) {
+            event.target.destroy();
+            //setVideoPlayed(myvideoid);
+            updateSongs();
+            //playNextVideo();
+        }
+    }
 
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      var cookies = document.cookie.split(";");
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === name + "=") {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+    function updateSongs() {
+        fetch('/api/get-songss/')
+            .then(response => response.json())
+            .then(data => {
+                var nsongs = data.newsongs;
+                // clear the queue
+                queue = [];
+                queue_token_no = [];
+                // update the songs and queue variables
+                nsongs.forEach(song => {
+                    var text = song[0];
+                    var videoId = getYouTubeVideoId(text);
+                    queue.push(videoId);
+                    queue_token_no.push(song[3]);
+                });
+                console.log('Songs updated:', queue);
+            })
+            .catch(error => {
+                console.log('Error updating songs:', error);
+            });
+    }
+
+
+    async function getVideoName(videoId) {
+        try {
+            const apiUrl = "https://www.googleapis.com/youtube/v3/videos";
+            const params = {
+                id: videoId,
+                key: "AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI",
+                part: "snippet"
+            };
+
+            const response = await fetch(apiUrl + "?" + new URLSearchParams(params));
+            const data = await response.json();
+
+            if (data.items.length > 0) {
+                const videoName = data.items[0].snippet.title;
+                return videoName;
+            } else {
+                return "Unknown Video";
+            }
+        } catch (error) {
+            alert("Error fetching video title:", error);
+            return "Unknown Video";
+        }
+    }
+
+    async function updateQueueDisplay() {
+        var queueBody = document.getElementById("queue-body");
+        queueBody.innerHTML = ""; // Clear the existing queue
+      
+        for (var i = 0; i < queue.length; i++) {
+          var videoId = queue[i];
+          var tokenNo = queue_token_no[i];
+      
+          try {
+            var videoName = await getVideoName(videoId);
+            var videoLink = "https://www.youtube.com/watch?v=" + videoId;
+      
+            var row = document.createElement("tr");
+      
+            var tokenIdColumn = document.createElement("td");
+            tokenIdColumn.textContent = tokenNo;
+            row.appendChild(tokenIdColumn);
+      
+            var songNameColumn = document.createElement("td");
+            songNameColumn.textContent = videoName;
+            row.appendChild(songNameColumn);
+      
+            var removeButtonColumn = document.createElement("td");
+            var removeButton = document.createElement("img");
+            removeButton.src = "/images/cross1.png"; // Replace with the path or URL of your remove icon image
+            removeButton.alt = "Remove";
+            removeButton.addEventListener("click", (function(videoIdToRemove) {
+              return function() {
+                setVideoPlayed2(videoIdToRemove);
+              };
+            })(getYouTubeVideoId(videoLink)));
+            removeButtonColumn.appendChild(removeButton);
+            row.appendChild(removeButtonColumn);
+      
+            var blacklistButtonColumn = document.createElement("td");
+            var blacklistButton = document.createElement("img");
+            blacklistButton.src = "/images/list.png";
+            blacklistButton.alt = "Blacklist";
+            blacklistButton.addEventListener("click", (function(videoLink) {
+              return function() {
+                addToBlacklist2(videoLink);
+              };
+            })(videoLink));
+            blacklistButtonColumn.appendChild(blacklistButton);
+            row.appendChild(blacklistButtonColumn);
+      
+            queueBody.appendChild(row);
+          } catch (error) {
+            console.log("Error fetching video name:", error);
+            // Handle error case if necessary
+          }
         }
       }
+
+    function toggleCafeStatus() {
+        var activeBtn = document.getElementById("active-btn");
+        var isActive = activeBtn.textContent === "Active";
+        fetch("{% url 'update_cafe_status' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    "is_active": !isActive
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    var cafe = data.cafe;
+                    activeBtn.textContent = cafe.is_active ? "Active" : "Inactive";
+                    if (cafe.is_active) {
+                        console.log("Cafe is currently active");
+                    } else {
+                        console.log("Cafe is not currently active");
+                    }
+                } else {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => console.error(error));
     }
-    return cookieValue;
-  }
+    
+    function logout() {
+        window.location.href = "{% url 'logout_view' %}";
+    }
 
-  function addToBlacklist() {
-    var youtubeLink = document.getElementById("blacklist-link").value;
-    $.ajax({
-        type: "POST",
-        url: "/api/add-to-blacklist/",
-        data: {
-            youtube_link: youtubeLink,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        success: function(response) {
-            if (response.success) {
-                alert("Link has been added to the blacklist");
-            } else {
-                alert("Error: " + response.error);
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
-    });
-  }
+        return cookieValue;
+    }
 
-  function addToBlacklist2(youtubeLink) {
-    $.ajax({
-        type: "POST",
-        url: "/api/add-to-blacklist2/",
-        data: {
-            youtube_link: youtubeLink,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        },
-        success: function(response) {
-            if (response.success) {
-                alert("Link has been added to the blacklist");
-            } else {
-                alert("Error: " + response.error);
+    function addToBlacklist() {
+        var youtubeLink = document.getElementById("blacklist-link").value;
+        $.ajax({
+            type: "POST",
+            url: "/api/add-to-blacklist/",
+            data: {
+                youtube_link: youtubeLink,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert("Link has been added to the blacklist");
+                } else {
+                    alert("Error: " + response.error);
+                }
             }
+        });
+    }
+
+    function addToBlacklist2(youtubeLink) {
+        $.ajax({
+            type: "POST",
+            url: "/api/add-to-blacklist2/",
+            data: {
+                youtube_link: youtubeLink,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert("Link has been added to the blacklist");
+                    updateSongs();
+                    updateQueueDisplay();
+                } else {
+                    alert("Error: " + response.error);
+                }
+            }
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve the session ID from the browser's storage
+        var sessionID = localStorage.getItem('session_id');
+        console.log("Session id: ", sessionID)
+        if (sessionID) {
+            // Make an API request to verify the session
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Session is verified, continue with loading the desired page
+                        console.log('Session verified');
+                        Refresh();
+                    } else {
+                        // Session is not verified, redirect to the login page
+                        window.location.href = '/accounts/login/'; // Replace with the actual login URL
+                    }
+                } else {
+                    console.log('Request failed. Status:', xhr.status);
+                }
+            };
+            xhr.send(JSON.stringify({
+                'session_id': sessionID
+            }));
+        } else {
+            // Session ID is not found, redirect to the login page
+            window.location.href = '/accounts/login/'; // Replace with the actual login URL
         }
     });
-  }
-  document.addEventListener("DOMContentLoaded", function() {
-    Refresh();
-  });
-  document.getElementById("active-btn").addEventListener("click", toggleCafeStatus);
+    document.getElementById("active-btn").addEventListener("click", toggleCafeStatus);
 </script>
 {% endblock %}
-</body>
-</html>

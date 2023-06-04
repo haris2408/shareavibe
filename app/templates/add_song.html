@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,12 +29,26 @@
             height: 50px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+    
+        .logo {
+            color: #fff;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            flex-grow: 1;
+        }
+        .back-arrow {
+            margin-right: -30px;
         }
         
         h1 {
             text-align: left;
             color: #333;
+            margin-left: 15px;
+            ;
         }
         
         h2 {
@@ -85,6 +98,26 @@
             background-color: lightsalmon;
         }
         
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: 350px;
+            background-color: #fffec8;
+        }
+        
+        th {
+            background-color: orange;
+            color: white;
+            padding: 10px;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 18px;
+        }
+        
         ul {
             list-style-type: none;
             padding: 0;
@@ -100,69 +133,18 @@
             border-radius: 5px;
         }
         
-        button[data-song-id] {
-            background-color: #f5b53e;
-            border: none;
-            border-radius: 10px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        
-        .logo {
-            color: #fff;
-            font-size: 24px;
-            text-decoration: none;
-        }
-        
-        button[data-song-id]:hover {
-            background-color: #f5b53e;
-        }
-        
-        .song-list-container li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .song-list-container button {
-            background-color: orange;
-            color: #fff;
-            border: none;
-            padding: 10px 10px;
-            border-radius: 10px;
-            width: 10%;
-            margin: 5px;
-        }
-        
-        .song-list-container {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: orange;
-            border-radius: 5px;
-        }
-        
-        .playlist-name {
-            margin-bottom: 5px;
-            text-align: left;
-        }
-        
-        form {
-            text-align: left;
-            margin-left: 10px;
-            align-items: center;
-        }
         
         .play-icon {
             background-image: url('/images/play2.png');
             background-size: cover;
             display: inline-block;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             cursor: pointer;
-            margin-right: 40px;
+            margin-right: 10px;
         }
-	  .cross-icon {
+        
+        .cross-icon {
             background-image: url('/images/cross1.png');
             background-size: cover;
             display: inline-block;
@@ -170,185 +152,198 @@
             height: 25px;
             cursor: pointer;
         }
+        
+        form {
+            margin-left: 15px;
+        }
     </style>
 </head>
 
 
 <body>
     <div class="navbar">
-        <a class="logo" href="#"><img src="/images/nav_logo.png" alt="Logo"></a>
+
+        <a class="back-arrow" href="javascript:history.go(-1)">
+            <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
+        </a>
+        <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
     </div>
 
-    <div class="song-container">
-        <h1>My Songs</h1>
 
-        <form method="POST">
-            {% csrf_token %}
-            <label for="song_link">Add Song:</label>
-            <input type="text" name="song_link" id="song_link" required>
-            <button type="submit">Add</button>
-        </form>
+    <h1>My Songs</h1>
 
-        <div class="song-list-container">
-            <h2>Existing Songs:</h2>
-            {% if songs %}
-            <ul>
-                {% for song in songs %}
-                <div class="playlist-name"></div>
-
-                <div>
-                    <li>
-                        
-                        <p>{{ song.song_name }}</p>
-				                <span class="cross-icon" data-song-id="{{ song.id }}" data-song-link="{{ song.song_link }}" onclick="removeSong(event)"></span>
-                        <span class="play-icon" data-song-id="{{ song.id }}" data-song-link="{{ song.song_link }}"></span>{% endfor %}
-
-                    </li>
-
-                </div>
-        </div>
-        </ul>
-        {% else %}
-        <p>No songs yet.</p>
-        {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <label for="song_link">Add Song:</label>
+        <input type="text" name="song_link" id="song_link" required>
+        <button type="submit">Add</button>
+    </form>
     </div>
-    
+
+    <table>
+        <thead>
+            <tr>
+                <th>Song Name</th>
+                <th>Remove</th>
+                <th>Play</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if songs %} {% for song in songs %}
+            <tr>
+                <td>{{ song.song_name }}</td>
+                <td>
+                    <span class="cross-icon" data-song-id="{{ song.id }}" data-song-link="{{ song.song_link }}" onclick="removeSong(event)"></span>
+                </td>
+                <td><span class="play-icon" data-song-id="{{ song.id }}" data-song-link="{{ song.song_link }}" ></span>
+                </td>
+            </tr>
+            {% endfor %} {% else %}
+            <tr>
+                <td colspan="2">No songs yet.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
     </div>
 </body>
+
+</html>
+
 <script>
+    function removeSong(event) {
+        const songId = event.target.getAttribute("data-song-id");
+        const songLink = event.target.getAttribute("data-song-link");
 
-  function removeSong(event) {
-    const songId = event.target.getAttribute("data-song-id");
-    const songLink = event.target.getAttribute("data-song-link");
-
-    // Send an AJAX request to the API view to remove the song
-    fetch(`/api/songs/${songId}/remove`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": "{{ csrf_token }}",
-        },
-        body: JSON.stringify({
-            song_link: songLink,
-        }),
-    })
-        .then(response => {
-            if (response.ok) {
-                // Remove the song from the DOM if successfully deleted
-                event.target.parentNode.remove();
-            } else {
-                // Handle error if removal fails
-                console.error("Failed to remove song.");
-            }
-        })
-        .catch(error => {
-            console.error("An error occurred:", error);
-        });
-  } 
+        // Send an AJAX request to the API view to remove the song
+        fetch(`/api/songs/${songId}/remove`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({
+                    song_link: songLink,
+                }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Remove the song from the DOM if successfully deleted
+                    event.target.parentNode.remove();
+                    alert("Song removed successfully");
+                } else {
+                    alert("Error removing song");
+                }
+            })
+            .catch(error => {
+                console.error("An error occurred:", error);
+            });
+    }
     async function playYouTube() {
         var youtubeLink = document.getElementById("youtube-link").value;
-        
+
         try {
-          var isSong = await isSongVideo(youtubeLink);
-          console.log("is song:",isSong);
-          if (isSong) {
-            const durationInSeconds = await getSongDuration(youtubeLink);
-            
-            if (durationInSeconds > 360) {
-              console.log('Song duration is greater than 6 minutes');
-            } else {
-              console.log('Song duration is less than or equal to 6 minutes');
-              fetch('/api/play-youtube/', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: 'youtube_link=' + encodeURIComponent(youtubeLink)
-              }).then(function(response) {
-                if (response.ok) {
-                  //console.log('YouTube video added to queue');
+            var isSong = await isSongVideo(youtubeLink);
+            console.log("is song:", isSong);
+            if (isSong) {
+                const durationInSeconds = await getSongDuration(youtubeLink);
+
+                if (durationInSeconds > 360) {
+                    console.log('Song duration is greater than 6 minutes');
                 } else {
-                  console.log('Error adding YouTube video to queue');
+                    console.log('Song duration is less than or equal to 6 minutes');
+                    fetch('/api/play-youtube/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'youtube_link=' + encodeURIComponent(youtubeLink)
+                    }).then(function(response) {
+                        if (response.ok) {
+                            //console.log('YouTube video added to queue');
+                        } else {
+                            console.log('Error adding YouTube video to queue');
+                        }
+                    }).catch(function(error) {
+                        console.log('Network error:', error);
+                    });
                 }
-              }).catch(function(error) {
-                console.log('Network error:', error);
-              });
+            } else {
+                console.log('The provided link is not a song video');
             }
-          } else {
-            console.log('The provided link is not a song video');
-          }
         } catch (error) {
-          console.log('Error checking if the video is a song:', error);
+            console.log('Error checking if the video is a song:', error);
         }
-      }
-      function getYouTubeVideoId(link) {
+    }
+
+    function getYouTubeVideoId(link) {
         var videoId = link.split('v=')[1];
         var ampersandPosition = videoId.indexOf('&');
         if (ampersandPosition !== -1) {
-          videoId = videoId.substring(0, ampersandPosition);
+            videoId = videoId.substring(0, ampersandPosition);
         }
         return videoId;
-      }  
-    
-      async function isSongVideo(youtubeLink) {
+    }
+
+    async function isSongVideo(youtubeLink) {
         try {
-          const videoId = getYouTubeVideoId(youtubeLink);
-          const apiKey = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o';
-          const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
-      
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-      
-          if (data.items.length > 0) {
-            const videoCategory = data.items[0].snippet.categoryId;
-      
-            // Assuming the category ID for song videos is '10' (Music)
-            if (videoCategory === '10') {
-              return true; // It's a song video
+            const videoId = getYouTubeVideoId(youtubeLink);
+            const apiKey = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI';
+            const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
+
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.items.length > 0) {
+                const videoCategory = data.items[0].snippet.categoryId;
+
+                // Assuming the category ID for song videos is '10' (Music)
+                if (videoCategory === '10') {
+                    return true; // It's a song video
+                }
             }
-          }
-      
-          return false; // Not a song video
+
+            return false; // Not a song video
         } catch (error) {
-          console.log('Error checking song video:', error);
-          return false; // Error occurred, assume it's not a song video
+            console.log('Error checking song video:', error);
+            return false; // Error occurred, assume it's not a song video
         }
-      }      
-      
-      async function getSongDuration(youtubeLink) {
+    }
+
+    async function getSongDuration(youtubeLink) {
         try {
-          const videoId = getYouTubeVideoId(youtubeLink);
-          const apiKey = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o';
-          const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=contentDetails`;
-      
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-      
-          if (data.items.length > 0) {
-            const duration = data.items[0].contentDetails.duration;
-            const durationInSeconds = parseDurationToSeconds(duration);
-            return durationInSeconds;
-          }
-      
-          return 0; // Invalid or unavailable duration
+            const videoId = getYouTubeVideoId(youtubeLink);
+            const apiKey = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI';
+            const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=contentDetails`;
+
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.items.length > 0) {
+                const duration = data.items[0].contentDetails.duration;
+                const durationInSeconds = parseDurationToSeconds(duration);
+                return durationInSeconds;
+            }
+
+            return 0; // Invalid or unavailable duration
         } catch (error) {
-          console.log('Error fetching song duration:', error);
-          return 0; // Error occurred, assume invalid duration
+            console.log('Error fetching song duration:', error);
+            return 0; // Error occurred, assume invalid duration
         }
-      }
-      
-      function parseDurationToSeconds(duration) {
+    }
+
+    function parseDurationToSeconds(duration) {
         const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-      
+
         const hours = (parseInt(match[1]) || 0);
         const minutes = (parseInt(match[2]) || 0);
         const seconds = (parseInt(match[3]) || 0);
-      
-        return hours * 3600 + minutes * 60 + seconds;
-      }
 
-        var playButtons = document.querySelectorAll('button[data-song-id]');
-        playButtons.forEach(function(button) {
+        return hours * 3600 + minutes * 60 + seconds;
+    }
+
+    var playButtons = document.querySelectorAll('span.play-icon[data-song-id]');
+    playButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             var songId = button.getAttribute('data-song-id');
             var songLink = button.getAttribute('data-song-link');
@@ -363,9 +358,9 @@
                 body: '&song_link=' + encodeURIComponent(songLink)
             }).then(function(response) {
                 if (response.ok) {
-                    console.log('Song added to queue');
+                    alert("Song added to queue");
                 } else {
-                    console.log('Error adding song to queue');
+                    alert("Error adding song to queue");
                 }
             }).catch(function(error) {
                 console.log('Network error:', error);
@@ -374,7 +369,36 @@
     });
 
     var playYouTubeButton = document.getElementById("play-youtube-button");
-    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Retrieve the session ID from the browser's storage
+        var sessionID = localStorage.getItem('session_id');
+        console.log("Session id: ", sessionID)
+        if (sessionID) {
+            // Make an API request to verify the session
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Session is verified, continue with loading the desired page
+                        console.log('Session verified');
+                    } else {
+                        // Session is not verified, redirect to the login page
+                        window.location.href = '/accounts/login/'; // Replace with the actual login URL
+                    }
+                } else {
+                    console.log('Request failed. Status:', xhr.status);
+                }
+            };
+            xhr.send(JSON.stringify({
+                'session_id': sessionID
+            }));
+        } else {
+            // Session ID is not found, redirect to the login page
+            window.location.href = '/accounts/login/'; // Replace with the actual login URL
+        }
+    });
 </script>
-
-

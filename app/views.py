@@ -22,6 +22,13 @@ from .serializers import cafeSerializer, addressSerializer
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
+def get_global_blacklist(request):
+    global_blacklist = GlobalBlacklist.objects.all().values('song_link', 'song_name')
+    return JsonResponse({'global_blacklist': list(global_blacklist)})
+
+def get_cafe_name(request):
+    cafe_name = Cafe.objects.all().values('name', 'logo')
+    return JsonResponse({'cafe_name': list(cafe_name)})
 
 @csrf_exempt
 def remove_playlist(request, playlist_id):
@@ -80,7 +87,7 @@ def globalblacklist(request):
             # Display a message indicating that the song is already blacklisted
             messages.info(request, 'This song is already blacklisted.')
         else:
-            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
             youtube = build('youtube', 'v3', developerKey=api_key)
             video_id = re.search(r'(?<=v=)[^&]+', blacklist_link).group()
             video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -94,6 +101,8 @@ def globalblacklist(request):
     context = {'blacklists': blacklists}
     return render(request, 'globalblacklist.html', context)
 
+
+
 def cafeblacklist(request):
     cafe_id = request.session.get('cafe_id')
     if request.method == 'POST':
@@ -105,7 +114,7 @@ def cafeblacklist(request):
             # Display a message indicating that the song is already blacklisted
             messages.info(request, 'This song is already blacklisted.')
         else:
-            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
             youtube = build('youtube', 'v3', developerKey=api_key)
             video_id = re.search(r'(?<=v=)[^&]+', blacklist_link).group()
             video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -120,7 +129,6 @@ def cafeblacklist(request):
     return render(request, 'cafeblacklist.html', context)
 
 def logout_view(request):
-    
     cafe_id = request.session.get('cafe_id')
     if cafe_id:
         try:
@@ -130,7 +138,6 @@ def logout_view(request):
             user.save()
         except CustomUser.DoesNotExist:
             pass
-
     return redirect('login')
 
 
@@ -163,10 +170,10 @@ class CustomJsonEncoder(json.JSONEncoder):
             return super().default(obj)
 
 
-def get_songs(request):
+def get_songss(request):
     cafe_id = request.session.get('cafe_id')
     queue = Queue.objects.filter(cafe_id=cafe_id, is_played=False)
-    newsongs = [(q.song_link, q.song_name, q.is_played) for q in queue]
+    newsongs = [(q.song_link, q.song_name, q.is_played,q.token_no) for q in queue]
     data = {'newsongs': newsongs}
     return JsonResponse(data, encoder=CustomJsonEncoder)
 
@@ -241,7 +248,7 @@ def play_youtube(request):
             else:
                 cafe = Cafe.objects.get(id=cafe_id)
                 next_token = cafe.next_token
-                api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+                api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
                 youtube = build('youtube', 'v3', developerKey=api_key)
                 video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
                 video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -264,7 +271,7 @@ def add_to_blacklist(request):
         if cafe_blacklist.exists():
             print('This song is already blacklisted')
         else:
-            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
             youtube = build('youtube', 'v3', developerKey=api_key)
             video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
             video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -284,7 +291,7 @@ def add_to_blacklist2(request):
         if cafe_blacklist.exists():
             print('This song is already blacklisted')
         else:
-            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
             youtube = build('youtube', 'v3', developerKey=api_key)
             video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
             video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -301,7 +308,7 @@ def add_to_Gblacklist(request):
         if cafe_blacklist.exists():
             print('This song is already blacklisted')
         else:
-            api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+            api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
             youtube = build('youtube', 'v3', developerKey=api_key)
             video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
             video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -402,7 +409,7 @@ def add_song(request, playlist_id):
     if request.method == 'POST':
         # Extract the song link from the form data
         song_link = request.POST['song_link']
-        api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+        api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
         youtube = build('youtube', 'v3', developerKey=api_key)
         video_id = re.search(r'(?<=v=)[^&]+', song_link).group()
         video_info = youtube.videos().list(part='snippet', id=video_id).execute()
@@ -673,7 +680,7 @@ def add_to_queue_mobile(request):
             else:
                 cafe = Cafe.objects.get(id=cafe_id)
                 next_token = cafe.next_token
-                api_key = 'AIzaSyCNtdk5YQKiONdmp1E3HZNZsmrAs1xBY5o'
+                api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
                 youtube = build('youtube', 'v3', developerKey=api_key)
                 video_id = youtube_link.split('/')[-1]
                 youtube_link = f'https://www.youtube.com/watch?v={video_id}'
