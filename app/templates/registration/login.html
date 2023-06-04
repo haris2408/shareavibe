@@ -170,6 +170,7 @@
                             console.log('Session verified');
                             localStorage.setItem('session_id', response.session_id);
                             localStorage.setItem('user', JSON.stringify(response.user));
+                            localStorage.setItem('logo',response.logo);
                             if (response.user.is_admin) {
                                 // User is admin, redirect to homeadmin.html
                                 window.location.href = '/login/homeadmin/'; // Replace with the actual URL of homeadmin.html

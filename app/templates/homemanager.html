@@ -276,6 +276,13 @@
         #active-btn:hover {
             background-color: {% if cafe.is_active %}#1e7e34{% else %}#c82333{% endif %};
         }
+        .circle-image {
+            width: 150px; 
+            height: 150px;
+            border-radius: 50%; 
+            background-size: cover;
+            background-position: center;
+          }
     </style>
 </head>
 
@@ -286,6 +293,7 @@
     <div class="container">
         <div class="col-lg-3 left-container">
             <div id="container">
+                <div class="circle-image"></div>
                 <h1>{{cafe.name}}</h1>
                 <br>
                 <button2 onclick="window.open('{% url 'playlists' %}', '_blank')" class="btn btn-primary mb-3">Playlist</button2>
@@ -354,6 +362,10 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
+    var imageUrl = localStorage.getItem('logo');
+
+    var circleImageElement = document.querySelector('.circle-image');
+    circleImageElement.style.backgroundImage = `url(${imageUrl})`;
     var current_tok;
     var player;
     var queue = [];

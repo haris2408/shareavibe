@@ -198,10 +198,11 @@ def get_songss(request):
 @csrf_exempt
 def update_queue(request):
     if request.method == 'POST':
+        cafe_id = request.session.get('cafe_id')
         queue_id = request.POST.get('queue_id')
         print('The first queue ID is:', queue_id)
         try:
-            queue = Queue.objects.get(id=queue_id)
+            queue = Queue.objects.get(id=queue_id,cafe_id=cafe_id,)
             queue.is_played = True
             queue.save()
             return JsonResponse({'status': 'success'})
@@ -468,6 +469,9 @@ def makelogin(request):
         if user is not None and password==user.password:
             # Get the cafe associated with the user
             cafe = user.cafe
+            cafe_dict = model_to_dict(cafe)
+            if cafe_dict['logo']:
+                cafe_dict['logo'] = cafe_dict['logo'].url
             session_id = uuid.uuid4()
             # store the session id in the database
             user.session_id = session_id
@@ -475,7 +479,9 @@ def makelogin(request):
             response_data = {
                     'status': 'success',
                     'session_id': session_id,
-                    'user': model_to_dict(user)
+                    'user': model_to_dict(user),
+                    'logo' : cafe_dict['logo']
+                    
                 }
             return JsonResponse(response_data)
         else:
