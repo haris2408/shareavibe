@@ -57,6 +57,8 @@ class Queue(models.Model):
     def set_played(self):
         self.is_played = True
         self.save()
+    def __str__(self) -> str:
+        return self.cafe.name
 
 class Address(models.Model):
     id = models.AutoField(primary_key=True)
