@@ -760,6 +760,7 @@ def set_user_cafe_mobile(request):
                             cafe = None
                         if cafe:
                             user.cafe = cafe
+                            print(f"{user.name} entered {cafe.name}")
                             user.save()
                             print(model_to_dict(user))
                             return JsonResponse({'status':'success', 'body': 'user added to cafe'})
@@ -878,3 +879,49 @@ def get_user_token(request):
             print(e)
             return JsonResponse({'status':'error in api'})
 
+
+@csrf_exempt
+def leave_cafe(request):
+    if request.method == 'POST':
+        print(f"********body: {request.body}")
+        body = json.loads(request.body)
+        email = body.get('email', '')
+        cafe_id = body.get('cafe_id','')
+        session_id = body.get('session_id', '')
+        try:
+            if email and cafe_id and session_id:
+                cafe_id = int(cafe_id)
+                try:
+                    user = MobileAppUsers.objects.get(email=email)
+                except MobileAppUsers.DoesNotExist:
+                    user = None
+                if user:
+                    print("*****************")
+                    # print(model_to_dict( user))
+                    # print(f"usercafeid: {user.cafe.id}")
+                    if user.session_id == session_id:
+                        try:
+                            user_cafe_id = Cafe.objects.get(id = user.cafe.id)
+                        except Cafe.DoesNotExist:
+                            user_cafe_id = None
+                        if user_cafe_id:
+                            print(user.token_no)
+                            if user_cafe_id.id == cafe_id:
+                                user.cafe = None
+                                user.save()
+                                print(f'{user.email} left cafe {user_cafe_id.name}')
+                                return JsonResponse({'status':'success', 'body':f'{user.email} left cafe {user_cafe_id.name}'})    
+                            else:
+                                return JsonResponse({'status':'failuire', 'body':'user not in this cafe'})    
+                        else:
+                            return JsonResponse({'status':'failuire', 'body':' cafe not found'})
+                    else:
+                        return JsonResponse({'status':'failuire', 'body': 'user session expired'})    
+                else:
+                    return JsonResponse({'status':'failuire', 'body': 'user not found'})
+            else:
+                return JsonResponse({'status':'invalid request'})
+        except Exception as e:
+            print("exception in leave_cafe")
+            print(e)
+            return JsonResponse({'status':'error in api'})

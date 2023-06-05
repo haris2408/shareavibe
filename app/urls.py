@@ -46,6 +46,7 @@ urlpatterns = [
     path('api/set_user_cafe_mobile', views.set_user_cafe_mobile, name = 'set_user_cafe_mobile'),
     path('api/get_current_playing_song', views.get_current_playing_song, name = 'get_current_playing_song'),
     path('api/get_user_token', views.get_user_token, name = 'get_user_token'),
+    path('api/leave_cafe', views.leave_cafe, name = 'leave_cafe'),
     path('get_csrf_token/', views.get_csrf_token, name='get-csrf-token'),
     path('global-blacklist/', get_global_blacklist, name='global_blacklist'),
     path('cafe-name/', get_cafe_name, name='cafe_name'),
