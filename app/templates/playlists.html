@@ -99,7 +99,7 @@
             justify-content: space-between;
             padding: 0 10px;
         }
-    
+        
         .logo {
             color: #fff;
             display: flex;
@@ -107,10 +107,11 @@
             justify-content: center;
             flex-grow: 1;
         }
+        
         .back-arrow {
             margin-right: -30px;
         }
-
+        
         .container {
             background-color: white;
             padding: 10px;
@@ -138,22 +139,60 @@
             background-color: lightsalmon;
         }
         
+        .table-container {
+            background-color: orange;
+            padding: 10px;
+            margin-left: 350px;
+            border-radius: 5px;
+            align-items: center;
+            width: 50%;
+        }
+        
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+            margin-left: 350px;
+        }
+        
+        th {
+            background-color: orange;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+		td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-size: 18px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #f1ce7e;
+            transition: background-color 0.3s ease;
+        }
+        
         .cross {
             background-image: url("/images/cross1.png");
             background-size: cover;
-            display: flex;
+            display: inline-block;
             width: 25px;
             height: 25px;
-            margin-left: 650px;
             cursor: pointer;
         }
-        
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <a class="back-arrow" href="javascript:history.go(-1)">
+        <a class="back-arrow" href="/login/homemanager/">
             <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
         </a>
         <a class="logo"><img src="/images/nav_logo.png" alt="Logo"></a>
@@ -168,24 +207,30 @@
             <button type="submit">Create</button>
         </form>
     </div>
-    <div class="playlist-container">
-        <h2>Existing Playlists:</h2>
-        {% if playlists %}
-        <ul>
+
+
+    {% if playlists %}
+    <table>
+        <thead>
+            <tr>
+                <th>Playlist Name</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for playlist in playlists %}
-            <div class="playlist-name">
-                <li><a href="{% url 'add_song' playlist_id=playlist.id %}">{{ playlist.playlist_name }}</a>
-                    <span class="cross" onclick="removePlaylist('{{ playlist.id }}')"></span>
-                </li>
-
-
-            </div>
+            <tr>
+                <td><a href="{% url 'add_song' playlist_id=playlist.id %}">{{ playlist.playlist_name }}</a></td>
+                <td><span class="cross" onclick="removePlaylist('{{ playlist.id }}')"></span></td>
+            </tr>
             {% endfor %}
-        </ul>
-        {% else %}
-        <p>No playlists yet.</p>
-        {% endif %}
-    </div>
+        </tbody>
+    </table>
+    {% else %}
+    <p>No playlists yet.</p>
+    {% endif %}
+
+
 </body>
 
 </html>

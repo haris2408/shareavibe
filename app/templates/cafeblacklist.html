@@ -91,7 +91,7 @@
             margin-top: 10px;
             border-radius: 20px;
             margin-left: 350px;
-            background-color: #fffec8;
+            background-color: white;
         }
         
         th {
@@ -158,6 +158,22 @@
             cursor: pointer;
             margin-left: 15px;
         }
+		tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #f1ce7e;
+            transition: background-color 0.3s ease;
+        }
+		.table-container {
+			height: 600px; 
+			overflow-y: auto; 
+}
+
+
+
+
     </style>
 </head>
 
@@ -174,41 +190,41 @@
         <label for="blacklist_link">Add Song:</label>
         <form method="POST">
             {% csrf_token %}
-
             <input type="text" name="blacklist_link" id="blacklist_link" required>
             <button type="submit">Add</button>
         </form>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Song Link</th>
-                <th>Song Name</th>
-
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if blacklists %} {% for blacklist in blacklists %}
-            <tr>
-                <td>{{ blacklist.song_link }}</td>
-                <td>{{ blacklist.song_name }}</td>
-                <td><span class="cross-icon" onclick="removeBlacklistSong('{{ blacklist.id }}')"></span></td>
-            </tr>
-            {% endfor %} {% else %}
-            <tr>
-                <td colspan="3">No blacklisted songs yet.</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Song Link</th>
+                    <th>Song Name</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if blacklists %} {% for blacklist in blacklists %}
+                <tr>
+                    <td>{{ blacklist.song_link }}</td>
+                    <td>{{ blacklist.song_name }}</td>
+                    <td><span class="cross-icon" onclick="removeBlacklistSong('{{ blacklist.id }}')"></span></td>
+                </tr>
+                {% endfor %} {% else %}
+                <tr>
+                    <td colspan="3">No blacklisted songs yet.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
 </body>
 
 </html>
 <script>
     function removeBlacklistSong(blacklist_song_id) {
-        // Send an AJAX request to the API view to remove the song from the blacklist
+        
         fetch(`/api/blacklists/${blacklist_song_id}/remove`, {
                 method: "POST",
                 headers: {
@@ -218,10 +234,10 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Refresh the page to update the blacklist songs list
+                    
                     window.location.reload();
                 } else {
-                    // Handle error if removal fails
+                    
                     console.error("Failed to remove blacklist song.");
                 }
             })
@@ -230,11 +246,11 @@
             });
     }
     document.addEventListener('DOMContentLoaded', function() {
-        // Retrieve the session ID from the browser's storage
+        
         var sessionID = localStorage.getItem('session_id');
         console.log("Session id: ", sessionID)
         if (sessionID) {
-            // Make an API request to verify the session
+            
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/api/verify_session_web'); // Replace with the actual API URL
             xhr.setRequestHeader('Content-Type', 'application/json');
@@ -243,10 +259,10 @@
 
                     var response = JSON.parse(xhr.responseText);
                     if (response.status === 'success') {
-                        // Session is verified, continue with loading the desired page
+                       
                         console.log('Session verified');
                     } else {
-                        // Session is not verified, redirect to the login page
+                        
                         window.location.href = '/accounts/login/'; // Replace with the actual login URL
                     }
                 } else {
@@ -257,7 +273,7 @@
                 'session_id': sessionID
             }));
         } else {
-            // Session ID is not found, redirect to the login page
+            
             window.location.href = '/accounts/login/'; // Replace with the actual login URL
         }
     });
