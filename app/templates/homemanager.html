@@ -506,7 +506,7 @@
             console.log("current_tok:", current_tok);
             queue_token_no.shift();
             myvideoid = videoId;
-            setVideoPlayed(myvideoid);
+            //setVideoPlayed(myvideoid);
             console.log("myvideoid", myvideoid);
             //updateSongs();
             player = new YT.Player('player', {
@@ -548,6 +548,7 @@
         });
     }
     function setVideoPlayed2(videoId) {
+        
         $.ajax({
             type: 'POST',
             url: '/update-queueisplayed/',
@@ -557,8 +558,8 @@
             },
             success: function(response) {
                 alert("Link has been removed successfully");
-                updateQueueDisplay();
                 updateSongs();
+                updateQueueDisplay();
             },
             error: function(xhr, status, error) {
                 alert("Error removing song");
@@ -589,7 +590,7 @@
     function onPlayerStateChange(event) {
         if (event.data == YT.PlayerState.ENDED) {
             event.target.destroy();
-            //setVideoPlayed(myvideoid);
+            setVideoPlayed(myvideoid);
             updateSongs();
             //playNextVideo();
         }
@@ -604,13 +605,14 @@
                 queue = [];
                 queue_token_no = [];
                 // update the songs and queue variables
-                nsongs.forEach(song => {
+                nsongs.slice(1).forEach((song, index) => {
                     var text = song[0];
                     var videoId = getYouTubeVideoId(text);
                     queue.push(videoId);
                     queue_token_no.push(song[3]);
                 });
                 console.log('Songs updated:', queue);
+                console.log('Songs updated token no:', queue_token_no);
             })
             .catch(error => {
                 console.log('Error updating songs:', error);
@@ -649,7 +651,7 @@
         for (var i = 0; i < queue.length; i++) {
           var videoId = queue[i];
           var tokenNo = queue_token_no[i];
-      
+          
           try {
             var videoName = await getVideoName(videoId);
             var videoLink = "https://www.youtube.com/watch?v=" + videoId;
@@ -670,6 +672,8 @@
             removeButton.alt = "Remove";
             removeButton.addEventListener("click", (function(videoIdToRemove) {
               return function() {
+                console.log("videoplayedid",videoIdToRemove);
+                console.log("videoplayedtoken",tokenNo);
                 setVideoPlayed2(videoIdToRemove);
               };
             })(getYouTubeVideoId(videoLink)));
@@ -775,8 +779,9 @@
             success: function(response) {
                 if (response.success) {
                     alert("Link has been added to the blacklist");
-                    updateQueueDisplay();
                     updateSongs();
+                    updateQueueDisplay();
+                    
                 } else {
                     alert("Error: " + response.error);
                 }
