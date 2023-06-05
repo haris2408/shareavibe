@@ -213,7 +213,9 @@
     <div class="row">
         <div class="col-lg-3 left-container">
             <div class="buttons-container">
-                <p>Welcome admin</p>
+                <body onload="printAdminName()">
+                    <h4>Welcome, <span id="admin-name"></span></h4>
+                </body>
                 <a href="{% url 'globalblacklist' %}" class="button btn-primary mb-3">Global Blacklist</a>
                 
                  </div>
@@ -278,7 +280,13 @@
 {% block scripts %}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
+    var user = JSON.parse(localStorage.getItem('user'));
+    var admin_name = user.name;
+    console.log("name",admin_name);
+    function printAdminName() {
+        var adminNameElement = document.getElementById('admin-name');
+        adminNameElement.textContent = admin_name;
+    }
     $(document).ready(function() {
         $.getJSON("{% url 'global_blacklist' %}", function(data) {
           var globalBlacklist = data.global_blacklist;
