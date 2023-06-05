@@ -16,16 +16,19 @@
         
         .navbar {
             background-color: orange;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+    height: 50px;
+    display: flex;
+    justify-content: space-between; /* Add this line */
+    align-items: center;
+    padding: 0 20px; /* Add padding to create space around the logo and button */
         }
         
         .logo {
-            color: #fff;
-            font-size: 24px;
-            text-decoration: none;
+			color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
         }
         
         #container {
@@ -111,18 +114,17 @@
         
         button1 {
             background-color: white;
-            color: orange;
-            border-style: solid;
-            border-color: orange;
-            padding: 10px 5px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 150px 70px;
-            cursor: pointer;
-            border-radius: 10px;
-            align-items: baseline;
+    color: orange;
+    border-style: solid;
+    border-color: orange;
+    padding: 10px 20px; /* Adjust padding to desired button size */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+           
         }
         
         .align-right {
@@ -134,14 +136,13 @@
         button8:hover,
         button2:hover,
         button3:hover,
-        button1:hover,
         button4:hover,
         {
             background-color: #F6BB30;
         }
         
         button1:hover {
-            background-color: #F6BB30;
+            background-color: red;
         }
         
         form {
@@ -257,11 +258,22 @@
 		color: black;
 		}
 
+		.queue-row tr:hover {
+		background-color: #F6BB30;
+		}
+
 		.queue-row:hover {
 		background-color: #F6BB30;
 		}
 		.queue-table tr:hover {
 		background-color: #F6BB30;
+		}
+
+		.queue-row td:hover {
+		background-color: #f3cd75;
+		}
+		.queue-table td:hover {
+		background-color: #eed18d;
 		}
 
         .queue-scroll {
@@ -290,6 +302,8 @@
 <body>
     <div class="navbar">
         <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
+		<button1 id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button1>
+   
     </div>
     <div class="container">
         <div class="col-lg-3 left-container">
@@ -302,8 +316,6 @@
                 <button3 onclick="window.open('{% url 'cafeblacklist' %}', '_blank')" class="btn btn-primary mb-3">Blacklist</button3>
                 <br>
                 
-                <br>
-                <button1 id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button1>
                 
             </div>
             
@@ -632,7 +644,7 @@
 
     async function updateQueueDisplay() {
         var queueBody = document.getElementById("queue-body");
-        queueBody.innerHTML = "";  
+        queueBody.innerHTML = ""; // Clear the existing queue
       
         for (var i = 0; i < queue.length; i++) {
           var videoId = queue[i];

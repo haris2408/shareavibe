@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 
@@ -128,6 +130,31 @@
             margin-bottom: 10px;
             border-color: #FFD580;
         }
+		
+        .add-cafe-form input[type="float"]:hover {
+            
+            background-color: #FFD580;
+        }
+		.add-cafe-form input[type="address"]:hover {
+            
+            background-color: #FFD580;
+        }
+		.add-cafe-form input[type="text"]:hover {
+            
+            background-color: #FFD580;
+        }
+		.add-cafe-form input[type="email"]:hover {
+            
+            background-color: #FFD580;
+        }
+		.add-cafe-form input[type="tel"]:hover {
+            
+            background-color: #FFD580;
+        }
+		.add-cafe-form input[type="password"]:hover {
+            
+            background-color: #FFD580;
+        }
         
         .add-cafe-form input[type="submit"] {
             padding: 10px 20px;
@@ -140,6 +167,23 @@
         .add-cafe-form input[type="submit"]:hover {
             background-color: #FFD580;
         }
+		button1 {
+            background-color: white;
+    color: orange;
+    border-style: solid;
+    border-color: orange;
+    padding: 10px 20px; /* Adjust padding to desired button size */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+           
+        }
+		button1:hover {
+            background-color: red;
+        }
         
     </style>
 
@@ -151,6 +195,8 @@
             <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
         </a>
         <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
+		<button1 id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button1>
+   
     </div>
 
     <div class="add-cafe-container">
@@ -159,24 +205,24 @@
             {% csrf_token %}
             <h1 style="color: white;">Add Cafe</h1>
             <br>
+            
+            <label for="address">Address:</label>
+            <input type="address" id="address" name="address" required>
         
             <label for="cafe_name">Cafe Name:</label>
-            <input type="text" id="cafe_name" name="cafe_name" required placeholder="Enter the cafe name">
-
-            <label for="address">Address:</label>
-            <input type="address" id="address" name="address" required placeholder="Enter the address">
+            <input type="text" id="cafe_name" name="cafe_name" required>
         
             <label for="area">Area:</label>
-            <input type="text" id="area" name="area" required placeholder="Enter the area">
+            <input type="text" id="area" name="area" required>
         
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required placeholder="Enter managers email">
+            <input type="email" id="email" name="email" required>
         
             <label for="contact">Contact:</label>
-            <input type="tel" id="contact" name="contact" required placeholder="Enter managers contact">
+            <input type="tel" id="contact" name="contact" required>
         
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required placeholder="Enter managers password">
+            <input type="password" id="password" name="password" required>
         
             <label for="tllat">Top Left lat:</label>
             <input type="float" id="tllat" name="tllat" required>
@@ -243,4 +289,7 @@
             window.location.href = '/accounts/login/'; // Replace with the actual login URL
         }
     });
+	function logout() {
+        window.location.href = "{% url 'logout_view' %}";
+    }
 </script>

@@ -48,7 +48,7 @@
             text-align: left;
             color: #333;
             margin-left: 15px;
-            ;
+            
         }
         
         h2 {
@@ -103,13 +103,17 @@
             border-collapse: collapse;
             margin-top: 20px;
             margin-left: 350px;
-            background-color: #fffec8;
+            background-color: white;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        
         }
         
         th {
             background-color: orange;
             color: white;
             padding: 10px;
+			border-radius: 8px;
+            text-align: left;
         }
         
         td {
@@ -117,6 +121,15 @@
             padding: 10px;
             font-size: 18px;
         }
+		tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #f1ce7e;
+            transition: background-color 0.3s ease;
+        }
+        
         
         ul {
             list-style-type: none;
@@ -156,6 +169,23 @@
         form {
             margin-left: 15px;
         }
+		button1 {
+            background-color: white;
+    color: orange;
+    border-style: solid;
+    border-color: orange;
+    padding: 10px 20px; /* Adjust padding to desired button size */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+           
+        }
+		button1:hover {
+            background-color: red;
+        }
     </style>
 </head>
 
@@ -167,6 +197,8 @@
             <img src="/images/backarrow.png" alt="Back Arrow" style="width: 60px; height: 35px;">
         </a>
         <a class="logo" ><img src="/images/nav_logo.png" alt="Logo"></a>
+		<button1 id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button1>
+   
     </div>
 
 
@@ -239,6 +271,10 @@
                 console.error("An error occurred:", error);
             });
     }
+	function logout() {
+        window.location.href = "{% url 'logout_view' %}";
+    }
+
     async function playYouTube() {
         var youtubeLink = document.getElementById("youtube-link").value;
 
