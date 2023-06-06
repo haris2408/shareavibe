@@ -28,7 +28,6 @@ def get_managers(request):
 
 def add_manager(request):
     if request.method == 'POST':
-        # Get the data from the request
         email = request.POST.get('email')
         contact = request.POST.get('contact')
         password = request.POST.get('password')

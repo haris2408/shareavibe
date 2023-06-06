@@ -422,6 +422,7 @@
                         body: 'youtube_link=' + encodeURIComponent(youtubeLink)
                     }).then(function(response) {
                         if (response.ok) {
+                            alert("Link has been pushed successfully");
                             //console.log('YouTube video added to queue');
                         } else {
                             console.log('Error adding YouTube video to queue');
