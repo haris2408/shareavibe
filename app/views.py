@@ -419,7 +419,7 @@ def add_user(request):
 
     return render(request, 'add_user.html')
 
-def add_song(request, playlist_id):
+def add_song(request, playlist_id, playlist_name):
     # Retrieve the playlist with the given ID
     playlist = get_object_or_404(Playlist, pk=playlist_id)
     
@@ -441,7 +441,7 @@ def add_song(request, playlist_id):
     songs = playlist.song_set.all()
     
     # Render the add_song template with the list of songs
-    context = {'playlist': playlist, 'songs': songs}
+    context = {'playlist': playlist, 'songs': songs, 'playlist_name': playlist_name}
     return render(request, 'add_song.html', context)
 
 def playlist(request):

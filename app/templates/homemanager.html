@@ -422,7 +422,9 @@
                         body: 'youtube_link=' + encodeURIComponent(youtubeLink)
                     }).then(function(response) {
                         if (response.ok) {
-                            alert("Link has been pushed successfully");
+                            //alert("Link has been pushed successfully");
+                            updateSongs();
+                            updateQueueDisplay();
                             //console.log('YouTube video added to queue');
                         } else {
                             console.log('Error adding YouTube video to queue');
@@ -652,7 +654,7 @@
         for (var i = 0; i < queue.length; i++) {
           var videoId = queue[i];
           var tokenNo = queue_token_no[i];
-          
+          console.log("mytokennooo",tokenNo);
           try {
             var videoName = await getVideoName(videoId);
             var videoLink = "https://www.youtube.com/watch?v=" + videoId;

@@ -239,7 +239,7 @@
         <tbody>
             {% for playlist in playlists %}
             <tr>
-                <td><a href="{% url 'add_song' playlist_id=playlist.id %}">{{ playlist.playlist_name }}</a></td>
+                <td><a href="{% url 'add_song' playlist_id=playlist.id playlist_name=playlist.playlist_name %}">{{ playlist.playlist_name }}</a></td>
                 <td><span class="cross" onclick="removePlaylist('{{ playlist.id }}')"></span></td>
             </tr>
             {% endfor %}
