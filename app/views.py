@@ -449,7 +449,7 @@ def add_song(request, playlist_id, playlist_name):
         song = Song.objects.create(playlist=playlist, song_link=song_link,song_name=song_name)
         
         # Redirect to the add_song page for this playlist
-        return redirect('add_song', playlist_id=playlist_id)
+        return redirect('add_song', playlist_id=playlist_id, playlist_name=playlist_name)
     
     # Retrieve the list of songs for this playlist
     songs = playlist.song_set.all()
