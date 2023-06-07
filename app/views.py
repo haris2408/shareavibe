@@ -172,6 +172,20 @@ def update_queueisplayed(request):
   else:
     return JsonResponse({'message': 'Invalid request method.'})
 
+def update_queueisplayed2(request):
+  if request.method == 'POST':
+    song_link = request.POST.get('song_link')
+    print(song_link)
+    token_no = request.POST.get('token_no')
+    print(token_no)
+    song_link= "https://www.youtube.com/watch?v=" + song_link
+    cafe_id = request.session.get('cafe_id')
+    queue = Queue.objects.filter(cafe_id=cafe_id,song_link=song_link,token_no=token_no).update(is_played=True)
+    print(queue)
+    return JsonResponse({'message': 'Queue object updated successfully.'})
+  else:
+    return JsonResponse({'message': 'Invalid request method.'})
+
 class CustomJsonEncoder(json.JSONEncoder):
     """
     Custom JSON encoder that can serialize Django QuerySet and Model objects.
@@ -443,6 +457,7 @@ def add_song(request, playlist_id, playlist_name):
     # Render the add_song template with the list of songs
     context = {'playlist': playlist, 'songs': songs, 'playlist_name': playlist_name}
     return render(request, 'add_song.html', context)
+
 
 def playlist(request):
     cafe_id = request.session.get('cafe_id')

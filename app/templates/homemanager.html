@@ -512,6 +512,10 @@
             //setVideoPlayed(myvideoid);
             console.log("myvideoid", myvideoid);
             //updateSongs();
+            if(player)
+            {
+                player.destroy();
+            }
             player = new YT.Player('player', {
                 height: '260',
                 width: '865',
@@ -550,13 +554,14 @@
             }
         });
     }
-    function setVideoPlayed2(videoId) {
+    function setVideoPlayed2(videoId,tokenNo) {
         
         $.ajax({
             type: 'POST',
-            url: '/update-queueisplayed/',
+            url: '/update-queueisplayed2/',
             data: {
                 'song_link': videoId,
+                'token_no':tokenNo,
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
             success: function(response) {
@@ -595,7 +600,7 @@
             event.target.destroy();
             setVideoPlayed(myvideoid);
             updateSongs();
-            //playNextVideo();
+            playNextVideo();
         }
     }
 
@@ -673,13 +678,13 @@
             var removeButton = document.createElement("img");
             removeButton.src = "/images/cross1.png"; 
             removeButton.alt = "Remove";
-            removeButton.addEventListener("click", (function(videoIdToRemove) {
-              return function() {
-                console.log("videoplayedid",videoIdToRemove);
-                console.log("videoplayedtoken",tokenNo);
-                setVideoPlayed2(videoIdToRemove);
-              };
-            })(getYouTubeVideoId(videoLink)));
+            removeButton.addEventListener("click", (function(videoIdToRemove, tokenNoToRemove) {
+                return function() {
+                  console.log("videoplayedid", videoIdToRemove);
+                  console.log("videoplayedtoken", tokenNoToRemove);
+                  setVideoPlayed2(videoIdToRemove, tokenNoToRemove);
+                };
+              })(getYouTubeVideoId(videoLink), tokenNo));
             removeButtonColumn.appendChild(removeButton);
             row.appendChild(removeButtonColumn);
       

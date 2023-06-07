@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web,get_songss,get_global_blacklist,get_cafe_name,add_manager,get_managers
+from .views import add_user,homemanager,makelogin,homeadmin,add_cafe,playlist,add_song,play_song,update_cafe_status,update_queue,get_songs,update_queueisplayed,add_to_blacklist,add_to_Gblacklist,play_youtube,add_to_blacklist2,logout_view,cafeblacklist,globalblacklist,remove_song,remove_blacklist_song,remove_Gblacklist_song,remove_playlist,verify_session_web,get_songss,get_global_blacklist,get_cafe_name,add_manager,get_managers,update_queueisplayed2
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/update-queue/', update_queue, name='update_queue'),
     path('api/get-songss/', get_songss, name='get_songss'),
     path('update-queueisplayed/', update_queueisplayed, name='update_queueisplayed'),
+    path('update-queueisplayed2/', update_queueisplayed2, name='update_queueisplayed2'),
     path('api/add-to-blacklist/', add_to_blacklist, name='add_to_blacklist'),
     path('api/add-to-blacklist2/', add_to_blacklist2, name='add_to_blacklist2'),
     path('api/add-to-Gblacklist/', add_to_Gblacklist, name='add_to_Gblacklist'),
