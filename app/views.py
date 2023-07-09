@@ -756,7 +756,10 @@ def add_to_queue_mobile(request):
                 next_token = cafe.next_token
                 api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
                 youtube = build('youtube', 'v3', developerKey=api_key)
-                video_id = youtube_link.split('/')[-1]
+                if '?' in youtube_link:
+                    video_id = youtube_link.split('=')[-1]
+                else:
+                    video_id = youtube_link.split('/')[-1]
                 youtube_link = f'https://www.youtube.com/watch?v={video_id}'
                 # video_id = re.search(r'(?<=v=)[^&]+', youtube_link).group()
                 video_info = youtube.videos().list(part='snippet', id=video_id).execute()
