@@ -8,6 +8,7 @@ import app.views as views
 urlpatterns = [
     #path('add-user/', add_user, name='add_user'),
     #path('add-cafe/', add_cafe, name='add_cafe'),
+    path('login/homeadmin/displaycafe/<int:cafe_id>/', views.display_cafe, name='display_cafe'),
     path('api/playlists/<int:playlist_id>/remove', remove_playlist, name='remove_playlist'),
     path('api/blacklists/<int:blacklist_song_id>/remove', remove_blacklist_song, name='remove_blacklist_song'),
     path('api/Gblacklists/<int:Gblacklist_song_id>/remove', remove_Gblacklist_song, name='remove_Gblacklist_song'),

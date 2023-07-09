@@ -1,0 +1,9 @@
+<!-- displaycafe.html -->
+
+<h2>{{ cafe.name }}</h2>
+{% if cafe.logo %}
+  <img src="{{ cafe.logo.url }}" alt="Cafe Logo">
+{% endif %}
+<p>Current Token: {{ cafe.current_token }}</p>
+<p>Next Token: {{ cafe.next_token }}</p>
+<p>Is Active: {% if cafe.is_active %}Active{% else %}Inactive{% endif %}</p>

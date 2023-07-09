@@ -347,15 +347,19 @@
           var cafename = data.cafe_name;
           var tableBody = $('#cafe-name-table tbody');
       
-          $.each(cafename, function(index, song) {
+          $.each(cafename, function(index, cafe) {
             var row = '<tr>' +
-                        '<td>' + song.name + '</td>' +
+                        '<td onclick="redirectToCafe(' + cafe.id + ')">' + cafe.name + '</td>' +
                       '</tr>';
             tableBody.append(row);
           });
         });
       });
-      
+    
+    function redirectToCafe(cafeId) {
+        window.location.href = '/login/homeadmin/displaycafe/' + cafeId;
+    }
+
     function addToGBlacklist() {
         var youtubeLink = document.getElementById("blacklist-link").value;
         $.ajax({

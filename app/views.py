@@ -24,6 +24,11 @@ from .serializers import cafeSerializer, addressSerializer
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
 
+def display_cafe(request, cafe_id):
+    cafe = Cafe.objects.get(id=cafe_id)
+    context = {'cafe': cafe}
+    return render(request, 'displaycafe.html', context)
+
 def get_managers(request):
     manager = CustomUser.objects.filter(is_approved=False).values('email', 'contact', 'password')
     return JsonResponse({'get_managers': list(manager)})
@@ -45,7 +50,7 @@ def get_global_blacklist(request):
     return JsonResponse({'global_blacklist': list(global_blacklist)})
 
 def get_cafe_name(request):
-    cafe_name = Cafe.objects.all().values('name', 'logo')
+    cafe_name = Cafe.objects.all().values('name', 'logo','id')
     return JsonResponse({'cafe_name': list(cafe_name)})
 
 @csrf_exempt
