@@ -157,6 +157,10 @@
             background-color: #f1ce7e;
             transition: background-color 0.3s ease;
         }
+        .table-container{
+            height: 600px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -178,6 +182,7 @@
             <button type="submit">Add</button>
         </form>
     </div>
+    <div class = "table-container">
     <table>
         <thead>
             <tr>
@@ -200,6 +205,7 @@
             {% endif %}
         </tbody>
     </table>
+</div>
 </body>
 
 </html>

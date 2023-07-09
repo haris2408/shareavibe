@@ -1,4 +1,6 @@
 import uuid
+#import spotipy
+#from spotipy.oauth2 import SpotifyOAuth
 from django.contrib import messages
 from django.forms import model_to_dict
 from app.models import CustomUser,Address,Cafe,Playlist,Song,Queue,CafeBlacklist,GlobalBlacklist,MobileAppUsers
@@ -128,6 +130,7 @@ def cafeblacklist(request):
         existing_blacklist = CafeBlacklist.objects.filter(song_link=blacklist_link, cafe_id=cafe_id).exists()
         if existing_blacklist:
             # Display a message indicating that the song is already blacklisted
+            #return JsonResponse({'message': 'Queue object updated successfully.'})
             messages.info(request, 'This song is already blacklisted.')
         else:
             api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'
@@ -151,6 +154,10 @@ def logout_view(request):
             user = CustomUser.objects.get(cafe_id=cafe_id)
             user.is_login = False
             user.session_id=None
+            mycafe = Cafe.objects.get(id=cafe_id)
+            #mycafe.current_token = 0
+            #mycafe.next_token = 1 
+            #mycafe.save()
             user.save()
         except CustomUser.DoesNotExist:
             pass
@@ -226,7 +233,11 @@ def update_cafe_status(request):
     if request.method == 'POST':
         cafe_id = request.session.get('cafe_id')
         cafe = Cafe.objects.get(id=cafe_id)
-        cafe.is_active = not cafe.is_active  # Toggle the is_active field
+        if cafe.is_active == 1:
+            cafe.is_active=0
+        else:
+            cafe.is_active=1
+        #cafe.is_active = not cafe.is_active  # Toggle the is_active field
         cafe.save()
         # Return success response with updated cafe object
         return JsonResponse({'success': True, 'cafe': {
@@ -266,12 +277,11 @@ def play_youtube(request):
         youtube_link = request.POST.get('youtube_link')
         cafe_id = request.session.get('cafe_id')
         # Check if the youtube_link is blacklisted
+        is_blacklisted2 = GlobalBlacklist.objects.filter(song_link=youtube_link).exists()
+        if is_blacklisted2:
+            print('This song is globally blacklisted')
+            return JsonResponse({'success': False, 'error': 'This song is globally blacklisted'})
         if cafe_id and youtube_link:
-            is_blacklisted2 = GlobalBlacklist.objects.filter(song_link=youtube_link).exists()
-            
-            if is_blacklisted2:
-                print('This song is globally blacklisted')
-                return JsonResponse({'success': False, 'error': 'This song is globally blacklisted'})
             is_blacklisted = CafeBlacklist.objects.filter(cafe_id=cafe_id,song_link=youtube_link).exists()
             if is_blacklisted:
                 print('This song is blacklisted')
@@ -365,24 +375,36 @@ def add_cafe(request):
         bllong = request.POST.get('bllong')
         brlat = request.POST.get('brlat')
         brlong = request.POST.get('brlong')
-
         # Retrieve the uploaded file data
-        print(request.FILES)
+        #print(request.FILES)
         logo = request.FILES.get('logo')
-        print(logo)
+        #print(logo)
+        user = CustomUser.objects.get(email=email)
+        if(user):
+            print(user)
+            cafe = Cafe.objects.create(name=cafe_name, logo=logo)
+            # Create the Address object
+            # address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, , cafe=cafe)
+            address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, topLeft_coord_long = tllong, topRight_coord_lat = trlat, topRight_coord_long = trlong, bottomLeft_coord_lat = bllat, bottomLeft_coord_long = bllong, BottomRight_coord_lat = brlat, BottomRight_coord_long = brlong, cafe=cafe)
+            # Create the CustomUser object
+            user.cafe = cafe
+            user.is_approved = True
+            user.save()
+            #user = CustomUser.objects.create(email=email, contact=contact, password=password, cafe=cafe,is_approved=True)
+            return redirect('homeadmin')
+        else:
+            # Create the Cafe object
+            cafe = Cafe.objects.create(name=cafe_name, logo=logo)
 
-        # Create the Cafe object
-        cafe = Cafe.objects.create(name=cafe_name, logo=logo)
+            # Create the Address object
+            # address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, , cafe=cafe)
+            address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, topLeft_coord_long = tllong, topRight_coord_lat = trlat, topRight_coord_long = trlong, bottomLeft_coord_lat = bllat, bottomLeft_coord_long = bllong, BottomRight_coord_lat = brlat, BottomRight_coord_long = brlong, cafe=cafe)
 
-        # Create the Address object
-        # address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, , cafe=cafe)
-        address = Address.objects.create(full_address=full_address, area=area, topLeft_coord_lat = tllat, topLeft_coord_long = tllong, topRight_coord_lat = trlat, topRight_coord_long = trlong, bottomLeft_coord_lat = bllat, bottomLeft_coord_long = bllong, BottomRight_coord_lat = brlat, BottomRight_coord_long = brlong, cafe=cafe)
+            # Create the CustomUser object
+            user = CustomUser.objects.create(email=email, contact=contact, password=password, cafe=cafe,is_approved=True)
 
-        # Create the CustomUser object
-        user = CustomUser.objects.create(email=email, contact=contact, password=password, cafe=cafe,is_approved=True)
-
-        # Redirect to the homepage
-        return redirect('homeadmin')
+            # Redirect to the homepage
+            return redirect('homeadmin')
 
     return render(request, 'add_cafe.html')
 
@@ -479,6 +501,7 @@ def makelogin(request):
         except CustomUser.DoesNotExist:
             user = None
         request.session['cafe_id'] = user.cafe.id if user and user.cafe else None
+        
         if user is not None and password==user.password:
             # Get the cafe associated with the user
             cafe = user.cafe

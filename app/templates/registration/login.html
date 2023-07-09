@@ -132,20 +132,20 @@
                     <br>
                     <a href="{% url 'add_manager' %}" class="button btn-primary mb-3">Want to register a cafe? Signup </a>
                 </form>
-                {% if messages %}
+                {% comment %} {% if messages %}
                 <ul class="messages">
                     {% for message in messages %}
                     <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
                         {% endfor %}
-                </ul>
-                <script>
+                </ul> {% endcomment %}
+                {% comment %} <script>
                     // Wait for 5 seconds before hiding the messages
                     setTimeout(function() {
                         var messages = document.getElementsByClassName('messages')[0];
                         messages.style.display = 'none';
                     }, 5000);
-                </script>
-                {% endif %}
+                </script> {% endcomment %}
+                {% comment %} {% endif %} {% endcomment %}
             </div>
         </div>
     </body>
@@ -154,10 +154,10 @@
 
     <script>
         // Wait for 5 seconds before hiding the messages
-        setTimeout(function() {
+        {% comment %} setTimeout(function() {
             var messages = document.getElementsByClassName('messages')[0];
             messages.style.display = 'none';
-        }, 5000);
+        }, 5000); {% endcomment %}
 
         document.addEventListener('DOMContentLoaded', function() {
             var loginForm = document.querySelector('.right-container form');
@@ -187,9 +187,11 @@
                         } else {
                             // Session is not verified, display error message or redirect to the login page
                             console.log('Session not verified');
+                            
                             // Display error message or redirect to login page
                         }
                     } else {
+                        alert("Incorrect username or password")
                         console.log('Request failed. Status:', xhr.status);
                     }
                 };

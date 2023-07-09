@@ -16,11 +16,11 @@
         
         .navbar {
             background-color: orange;
-    height: 50px;
-    display: flex;
-    justify-content: space-between; /* Add this line */
-    align-items: center;
-    padding: 0 20px; /* Add padding to create space around the logo and button */
+            height: 50px;
+            display: flex;
+            justify-content: space-between; /* Add this line */
+            align-items: center;
+            padding: 0 20px; /* Add padding to create space around the logo and button */
         }
         
         .logo {
@@ -399,8 +399,7 @@
         //var firstVideoId = queue[0];
         //setVideoPlayed(firstVideoId);
         playNextVideo();
-      }
-
+    }
     async function playYouTube() {
         var youtubeLink = document.getElementById("youtube-link").value;
 
@@ -421,15 +420,18 @@
                         },
                         body: 'youtube_link=' + encodeURIComponent(youtubeLink)
                     }).then(function(response) {
-                        if (response.ok) {
-                            //alert("Link has been pushed successfully");
+                        if (response.success) {
+                            alert("Link has been pushed successfully");
                             updateSongs();
                             updateQueueDisplay();
                             //console.log('YouTube video added to queue');
                         } else {
-                            console.log('Error adding YouTube video to queue');
+                            //console.log('Error adding YouTube video to queue');
+                            alert("This Song is blacklisted");
+                            //alert('This Song is blacklisted');
                         }
                     }).catch(function(error) {
+                        //alert('This Song is blacklisted');
                         alert('Network error:', error);
                     });
                 }
@@ -647,7 +649,7 @@
                 return "Unknown Video";
             }
         } catch (error) {
-            alert("Error fetching video title:", error);
+            //alert("Error fetching video title:", error);
             return "Unknown Video";
         }
     }
