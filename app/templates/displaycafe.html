@@ -1,9 +1,100 @@
 <!-- displaycafe.html -->
+<style>
+  body {
+    background-image: url("/images/t1.png");
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar {
+    background-color: orange;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .box {
+    background-color: orange;
+    color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    width: 40%;
+    text-align: center;
+  }
+  
+  .logo {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  
+  #logout-btn {
+    background-color: white;
+    color: orange;
+    border-style: solid;
+    border-color: orange;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+</style>
 
-<h2>{{ cafe.name }}</h2>
-{% if cafe.logo %}
-  <img src="{{ cafe.logo.url }}" alt="Cafe Logo">
-{% endif %}
-<p>Current Token: {{ cafe.current_token }}</p>
-<p>Next Token: {{ cafe.next_token }}</p>
-<p>Is Active: {% if cafe.is_active %}Active{% else %}Inactive{% endif %}</p>
+<body>
+  <div class="navbar">
+    <a class="logo"><img src="/images/nav_logo.png" alt="Logo"></a>
+    <button id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button>
+  </div>
+  
+  <div class="container">
+    <div class="box">
+      <h2>Cafe Name:</h2>
+      <p>{{ cafe.name }}</p>
+    </div>
+    
+    {% if cafe.logo %}
+      <div class="box">
+        <h2>Cafe Logo:</h2>
+        <img src="{{ cafe.logo.url }}" alt="Cafe Logo">
+      </div>
+    {% endif %}
+    
+    <div class="box">
+      <h2>Current Token:</h2>
+      <p>{{ cafe.current_token }}</p>
+    </div>
+    
+    <div class="box">
+      <h2>Next Token:</h2>
+      <p>{{ cafe.next_token }}</p>
+    </div>
+    
+    <div class="box">
+      <h2>Is Active:</h2>
+      <p>{% if cafe.is_active %}Active{% else %}Inactive{% endif %}</p>
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+      window.location.href = "{% url 'logout_view' %}";
+    }
+  </script>
+</body>
