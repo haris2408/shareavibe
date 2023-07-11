@@ -26,7 +26,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 def display_cafe(request, cafe_id):
     cafe = Cafe.objects.get(id=cafe_id)
-    context = {'cafe': cafe}
+    print(cafe)
+    address = Address.objects.get(cafe_id=cafe_id)
+    context = {'cafe': cafe, 'address': address}
     return render(request, 'displaycafe.html', context)
 
 def get_managers(request):
@@ -292,6 +294,7 @@ def play_youtube(request):
                 print('This song is blacklisted')
                 return JsonResponse({'success': False, 'error': 'This song is blacklisted'})
             else:
+                print("12345678")
                 cafe = Cafe.objects.get(id=cafe_id)
                 next_token = cafe.next_token
                 api_key = 'AIzaSyD9hpr10WRoTNtjujmRFpkHawvXFl51JOI'

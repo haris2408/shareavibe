@@ -205,7 +205,9 @@
             {% csrf_token %}
             <h1 style="color: white;">Add Cafe</h1>
             <br>
-            
+            <label for="logo">Logo:</label>
+			<input type="file" id="logo" name="logo" accept="image/*" required>
+
             <label for="address">Address:</label>
             <input type="address" id="address" name="address" required>
         

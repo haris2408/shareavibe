@@ -1,91 +1,127 @@
-<!-- displaycafe.html -->
-<style>
-  body {
-    background-image: url("/images/t1.png");
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .navbar {
-    background-color: orange;
-    height: 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 50px;
-  }
-  
-  .box {
-    background-color: orange;
-    color: white;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 10px;
-    width: 40%;
-    text-align: center;
-  }
-  
-  .logo {
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-  }
-  
-  #logout-btn {
-    background-color: white;
-    color: orange;
-    border-style: solid;
-    border-color: orange;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 10px;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display Cafe</title>
+  <style>
+    body {
+      background-color: #f8f8f8;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .navbar {
+      background-color: orange;
+      height: 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .back-arrow img {
+      width: 60px;
+      height: 35px;
+    }
+    
+    .logo {
+      color: #fff;
+      display: flex;
+      align-items: center;
+    }
+    
+    #logout-btn {
+      background-color: white;
+      color: orange;
+      border-style: solid;
+      border-color: orange;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+    
+    .box {
+      background-color: orange;
+      color: white;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      width: 40%;
+      text-align: center;
+    }
+
+    #logout-btn:hover{
+      background-color : red;
+
+    }
+    p1{
+      font-size: 45px;
+    }
+    
+    .circle-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 200px;
+      background-color: orange;
+      border-radius: 50%;
+    }
+    
+    .circle-image img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 50%;
+    }
+  </style>
+</head>
 
 <body>
   <div class="navbar">
-    <a class="logo"><img src="/images/nav_logo.png" alt="Logo"></a>
+    <a class="back-arrow" href="/login/homeadmin/">
+      <img src="/images/backarrow.png" alt="Back Arrow">
+    </a>
+    <a class="logo" href="#">
+      <img src="/images/nav_logo.png" alt="Logo">
+    </a>
     <button id="logout-btn" type="button" class="btn btn-danger" onclick="logout()">Logout</button>
   </div>
-  
+
   <div class="container">
     <div class="box">
-      <h2>Cafe Name:</h2>
-      <p>{{ cafe.name }}</p>
+      <p1>{{ cafe.name }}</p1>
     </div>
-    
+
     {% if cafe.logo %}
-      <div class="box">
-        <h2>Cafe Logo:</h2>
-        <img src="{{ cafe.logo.url }}" alt="Cafe Logo">
-      </div>
+    <div class="circle-image">
+      <img src="{{ cafe.logo.url }}" alt="Cafe Logo">
+    </div>
     {% endif %}
-    
+
     <div class="box">
       <h2>Current Token:</h2>
       <p>{{ cafe.current_token }}</p>
     </div>
-    
+
     <div class="box">
       <h2>Next Token:</h2>
       <p>{{ cafe.next_token }}</p>
     </div>
-    
+
     <div class="box">
       <h2>Is Active:</h2>
       <p>{% if cafe.is_active %}Active{% else %}Inactive{% endif %}</p>
@@ -98,3 +134,5 @@
     }
   </script>
 </body>
+
+</html>

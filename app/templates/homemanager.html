@@ -419,13 +419,18 @@
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
                         body: 'youtube_link=' + encodeURIComponent(youtubeLink)
-                    }).then(function(response) {
-                        if (response.success) {
+                    }).then(response => response.json())
+                    .then(data => {
+                        //var check = JSON.stringify(response)
+                        console.log("123", data)
+                        if (data.success) {
+                            //console.log("123", response.success)
                             alert("Link has been pushed successfully");
                             updateSongs();
                             updateQueueDisplay();
                             //console.log('YouTube video added to queue');
                         } else {
+                            //console.log("12345", response.success)
                             //console.log('Error adding YouTube video to queue');
                             alert("This Song is blacklisted");
                             //alert('This Song is blacklisted');
@@ -512,7 +517,7 @@
             queue_token_no.shift();
             myvideoid = videoId;
             //setVideoPlayed(myvideoid);
-            console.log("myvideoid", myvideoid);
+            //console.log("myvideoid", myvideoid);
             //updateSongs();
             if(player)
             {
@@ -661,7 +666,7 @@
         for (var i = 0; i < queue.length; i++) {
           var videoId = queue[i];
           var tokenNo = queue_token_no[i];
-          console.log("mytokennooo",tokenNo);
+          //console.log("mytokennooo",tokenNo);
           try {
             var videoName = await getVideoName(videoId);
             var videoLink = "https://www.youtube.com/watch?v=" + videoId;
